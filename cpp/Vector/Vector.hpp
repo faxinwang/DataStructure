@@ -20,7 +20,7 @@ template<typename T>
 class Sum{
 public:
 	T sum;
-	virtual void operator()(T& x){ sum = sum + x;}
+	virtual void operator()(T& x){ sum += x;}
 };
 
 template<typename T>
@@ -40,10 +40,10 @@ class Vector{
 			_elem = new T[cap];
 			int i;
 			for(i=0; i<size; ++i) _elem[i] = value; 
-			for(; i<cap; ++i) _elem[i] = T();
+//			for(; i<cap; ++i) _elem[i] = T();
 		}
 		//init from range a[low,high)
-		Vector<T>(T const* a, int low,int high):_elem(0) { copy(a,low,high); }
+		Vector<T>(T* const a, int low, int high):_elem(0) { copy(a,low,high); }
 		//init from range _elem[low,high) of another Vector
 		Vector<T>(const Vector<T>& v, int low,int high):_elem(0) { copy(v._elem,low,high);}
 		//init from another Vector
@@ -59,14 +59,28 @@ class Vector{
 			return *this; 
 		}
 		//destructor
-		~Vector<T>(){if(_elem) delete[] _elem;}
+		~Vector<T>(){if(_elem) delete[] _elem; _elem=0;}
 		
+		//number of elements
 		int size()const {return _size;}
+		//length of internal array
 		int capacity()const {return _cap;}
+		//return true if size()==0, else false
 		bool empty()const {return _size==0;}
+		//clear all elements
+		void clear(){ _size=0; }
 		
 		// 0 <= i < _size 
-		T& operator[](int i){ return _elem[i]; }
+		T& operator[](int i){ 
+			stringstream ss;
+			require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
+			return _elem[i]; 
+		}
+		const T& operator[](int i)const{
+			stringstream ss;
+			require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
+			return _elem[i]; 
+		}
 		//insert element x to pos
 		int insert(int pos, const T& x);
 		//delete range, return (end - beg)
@@ -113,14 +127,16 @@ class Vector{
 
 /*
 1.delete the old _elem 
-2.resize capacity to double size of the given range
-3.copy elements of the given range to _elem,
+2.resize capacity to the size of the given range
+3.copy elements of the given range to _elem, and update _size
 */
 template<typename T>	//TC: O(N)
 void Vector<T>::copy(T* const a,int low,int high){
-	require(low < high, "copy():Illegal arguments: [low < high] is required");
+	stringstream ss;
+	require(0<=low && low < high, 
+		(ss<<"copy():Illegal arguments: [0<=low && low < high] is required. low="<<low<<" high="<<high, ss));
 	if(_elem) delete[] _elem; //step1
-	_elem = new T[_cap = 2*(high-low)];//step2
+	_elem = new T[_cap = (high - low + 1)];//step2
 	_size = 0;
 	while(low < high) _elem[_size++] = a[low++]; //step3
 }
@@ -146,6 +162,8 @@ void Vector<T>::expand(){
 */
 template<typename T>  //0 <= pos <= _size	TC:O(N-pos) = O(N)
 int Vector<T>::insert(int pos,const T& x){
+	stringstream ss;
+	require(0 <= pos && pos<=_size, (ss<<"insert position out of range size="<<_size<<" pos="<<pos, ss) );
 	expand();
 	for(int i=_size; i>pos; --i) _elem[i] = _elem[i-1];
 	_elem[pos] = x; ++_size;
@@ -175,8 +193,7 @@ int Vector<T>::remove(int beg,int end){
 template<typename T> //0 <= pos < _size		TC: O(N-pos) = O(N)
 T Vector<T>::remove(int pos){
 	stringstream ss; 
-	ss<<"remove():Index out of range. index="<<pos<<" size="<<_size;
-	require(0<=pos && pos<_size, ss);
+	require(0<=pos && pos<_size, (ss<<"remove():Index out of range. index="<<pos<<" size="<<_size,ss));
 	T tmp = _elem[pos];
 	remove(pos,pos+1);
 	return tmp;
@@ -186,7 +203,9 @@ T Vector<T>::remove(int pos){
 */
 template<typename T> //0 <= beg <  end <= _size		TC: O(end - beg) = O(n)
 int Vector<T>::find(const T& x,int low,int high)const{
-	require(low < high, "find():Illegal arguments: [low < high] is required");
+	stringstream ss;
+	require(low < high, (ss<<"find():Illegal arguments: [low < high] is required, low="<<low<<" high="<<high, ss));
+	require(0<=low && high<= _size,(ss.str(""), ss<<"index out of range low="<<low<<" high="<<high, ss));
 	while( (low < high) && (x != _elem[low])) ++low;
 	return low; // if beg < end found it, else not found
 }

@@ -274,7 +274,7 @@ public:
     }
 
     //calculate the shortest distance for all vertex to the other vertex
-    shortestDistanceForAll(Vector<Vector<T> >& a){
+    void shortestDistanceForAll(Vector<Vector<T> >& a){
         //a[i][j] is the shortest distance between i and j
         a = _edges;
         for(int k=1; k<=_numNode; ++k){

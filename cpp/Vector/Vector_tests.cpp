@@ -25,7 +25,7 @@ int main(){
 	/*
 	size:10
 	capacity:10
-	*/	
+	*/
 	
 	for(int i=2;i<6;++i) v.push_back(i);
 	print(v,"after push back from 2 to 5");		//0 1 2 3 4 5 6 7 8 9 2 3 4 5
@@ -96,8 +96,24 @@ int main(){
 	Vector<string> v4=v2;	print(v4, "test copy constructor");
 	Vector<string> v5;		
 	v5 = v2;				print(v5, "test assign operator");
-
+	/*
+	///test copy constructor
+	hello world hello world hello world hello world hello world
 	
+	///test copy constructor
+	hello world hello world hello world hello world hello world
+	
+	///test assign operator
+	hello world hello world hello world hello world hello world
+	*/
+
+	int a[] = {1,2,3,4,5,6,7,8,9,10};
+	Vector<int> v6(a, 0,sizeof(a)/sizeof(a[0]));
+	print(v6,"constructed from array");
+	/*
+	///constructed from array
+	1 2 3 4 5 6 7 8 9 10
+	*/
 
 	return 0;
 }

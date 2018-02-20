@@ -17,6 +17,7 @@
         "xiosbase": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "unordered_map": "cpp"
     }
 }
