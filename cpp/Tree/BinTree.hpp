@@ -11,10 +11,12 @@ struct BinNode{
 	T data;		//data field 
 	int height; //the height of this node
 	int size(); //count all nodes of this node and its subnodes 
-	BinNode<T> *Pa,*LC,*RC; //pointers to its parent,left child and righ child
+	BinNode<T> *parent,*LC,*RC; //pointers to its parent,left child and righ child
 	BinNode<T>* insertAsLC(const T& e); //insert element e as left(right) child of this node
 	BinNode<T>* insertAsRC(const T& e);
 	BinNode<T>* next ;	//the next node in inOrder sequence
+	BinNode<T>* succ(); //return the next node in inOrder sequence
+	BinNode<T>* pred(); //return the previous node in inOrder sequence
 	/*update the height of this node*/
 	int updateHeight(){ return height = 1 + std::max(stature(LC), stature(RC)); }
 	void updateHeightAbove();
@@ -24,7 +26,7 @@ struct BinNode{
 //	template<typename VIS> void inOrder(VIS& vis);
 //	template<typename VIS> void postOrder(VIS& vis);
 	//constructor
-	BinNode(const T& dat, BinNode<T>* pa):data(dat),Pa(pa),height(1),LC(0),RC(0){}
+	BinNode(const T& dat, BinNode<T>* pa):data(dat),parent(pa),height(1),LC(0),RC(0){}
 };
 
 template<typename T>
@@ -57,18 +59,40 @@ void BinNode<T>::updateHeightAbove(){
 		int oldHeight = p->height;
 		int newHeight = p->updateHeight();
 		if( newHeight == oldHeight ) break;
-		p = p->Pa;
+		p = p->parent;
 	}
 }
+
+//返回当前节点在中序遍历序列中的直接后继
+//TC = O(h)， h为树的高度
+template<typename T>
+BinNode<T>* BinNode<T>::succ(){
+	BinNode* s = RC;
+	while( s->LC ) s = s->LC;
+	return s;
+}
+
+//返回当前节点在中序遍历序列中的直接前驱
+//TC = O(h)， h为树的高度
+template<typename T>
+BinNode<T>* BinNode<T>::pred(){
+	BinNode* s = LC;
+	while( s->RC ) s = s->RC;
+	return s;
+}
+
+
 
 template<typename T>
 class BinTree{
 	protected:
 		BinNode<T>* _root;
+		int _size;
 		virtual int updateHeight(BinNode<T>* x){ return x->updateHeight(); }
 		void updateHeightAbove(BinNode<T>* x) { x->updateHeightAbove(); }
 	public:
-		int size() const { return _root?_root->size() : 0; } 		//the size of all nodes
+		//  int size() const { return _root?_root->size() : 0; } 		//the size of all nodes
+		int size() const {return _size;}
 		bool empty() const { return !_root; }	//judge if the tree is empty
 		BinNode<T>* root() const { return _root; }
 		
@@ -82,11 +106,13 @@ class BinTree{
 template<typename T>
 BinTree<T>::BinTree(){
 	_root = 0;
+	_size = 0;
 }
 
 template<typename T>
 BinTree<T>::BinTree(const T& data){
 	_root = new BinNode<T>(data,NULL);
+	_size = 1;
 }
 
 
@@ -95,6 +121,7 @@ template<typename T>	//TC: O( depth(x) )
 BinNode<T>* BinTree<T>::insertAsLC(BinNode<T>* x, const T& e){
 	BinNode<T> *lc = x->insertAsLC(e);
 	updateHeightAbove(x);
+	++_size;
 	return lc;
 }
 
@@ -103,6 +130,7 @@ template<typename T>	//TC: O( depth(x) )
 BinNode<T>* BinTree<T>::insertAsRC(BinNode<T>* x, const T& e){
 	BinNode<T> *rc = x->insertAsRC(e);
 	updateHeightAbove(x);
+	++_size;
 	return rc;
 }
 
@@ -124,7 +152,7 @@ void prevOrder_iterative(VIS& visit, BinNode<T>* x){
 		x = s.pop();
 		visit( x->data );
 		/*To get the prevOrder, we heve to let the right child(if exist) push into stack first 
-		  because of the "Last In First Out(LIFO)" attribute of stack
+		  because of the "Last In First Out(LIFO)" feature of stack
 		*/
 		if( x->RC ) s.push( x->RC ); 
 		if( x->LC ) s.push( x->LC );

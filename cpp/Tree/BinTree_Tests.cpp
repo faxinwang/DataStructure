@@ -47,6 +47,16 @@ int main(){
 	postOrder_recursive(visit, me.root());
 	cout<<endl;
 	//mather grandGrandMa grandMa grandGrandFa grandFa father me
-	 
+	
 	return 0;
 }
+
+/*
+                     me
+                    /  \
+               mather  father
+                      /    \
+                grandMa   grandFa
+                 /           \
+        grandGrandMa       grandGrandFa
+*/
