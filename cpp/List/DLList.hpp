@@ -1,7 +1,7 @@
 #ifndef _DLList_H_
 #define _DLList_H_
 
-#include "../require.hpp"
+#include "../util/require.hpp"
 /*
 AUTHOR : FAXIN WANG
 DATE :	2017/8/10
@@ -10,6 +10,8 @@ NOTE:
 	Iterator. Node is for data storage. Iterator provides some simple but useful 
 	interface to visit and operate datas.
 */
+
+NamespaceBegin
 
 template<typename T>
 class DLList{
@@ -98,7 +100,7 @@ class DLList{
 		Iterator rBegin(){return Iterator(tail->prev,header,tail,Iterator::Reversed);}
 		//return the right end iterator
 		Iterator rEnd(){return Iterator(0,header,tail,Iterator::Reversed);}
-		//remove element at pos, return a iterator point to previous element
+		//remove element at pos, return a iterator point to the previous position of the removed element
 		Iterator erase(Iterator p){return Iterator( erase(p.cur), header, tail, p.type); }
 		//remove all duplciates of disordered list,return the number of elements removed
 		int deduplicate();
@@ -307,4 +309,6 @@ void DLList<T>::Swap(Node* a,Node* b){
 	b->prev = tmp;
 }
 
+
+NamespaceEnd
 #endif 

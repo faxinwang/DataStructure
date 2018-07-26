@@ -1,6 +1,7 @@
 #include "Queue.hpp"
 #include<iostream>
 using namespace std;
+using namespace wfx;
 
 template<class T>
 void popN(Queue<T>& q, int n, string str=""){

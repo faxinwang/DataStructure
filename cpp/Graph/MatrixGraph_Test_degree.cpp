@@ -1,6 +1,7 @@
 #include<iostream>
 #include"MatrixGraph.hpp"
 using namespace std;
+using namespace wfx;
 
 int main(){
     int v[]={1,2,3,4,5,6};

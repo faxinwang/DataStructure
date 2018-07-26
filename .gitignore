@@ -4,5 +4,12 @@
 #ignore dev's gmon.out file
 *.out
 
-#ingore *.exe files
+#ignore *.exe files
 *.exe
+
+#ingore temporary files
+_*.cpp
+_*.hpp
+
+#ignore vscode setting files
+.vscode

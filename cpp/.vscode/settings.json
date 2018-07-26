@@ -18,6 +18,8 @@
         "ios": "cpp",
         "iosfwd": "cpp",
         "type_traits": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "iostream": "cpp",
+        "streambuf": "cpp"
     }
 }

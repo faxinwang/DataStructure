@@ -1,6 +1,7 @@
 #include "Matrix.hpp"
 #include<iostream>
 using namespace std;
+using namespace wfx;
 
 template<typename T>
 void print(Matrix<T>& m, string str=""){

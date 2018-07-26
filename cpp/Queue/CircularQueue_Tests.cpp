@@ -1,6 +1,7 @@
 #include "CircularQueue.hpp"
 #include<iostream>
 using namespace std;
+using namespace wfx;
 
 template<class T>
 void popN(CircularQueue<T>& q, int n, string str=""){

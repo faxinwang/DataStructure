@@ -1,128 +1,201 @@
 #ifndef Vector_H
 #define Vector_H
 
-#include "../require.hpp"
-#include<sstream>
-#include<iostream>
-using std::stringstream;
+#include "../util/require.hpp"
 
+NamespaceBegin
 
 template<typename T>
 void swap(T &a, T &b){ T t=a; a = b; b = t;}
 
 template<typename T>
-class Increase{
-public:
+struct Increase
+{
 	virtual void operator()(T& x){++x;} //call ++ operator
 };
 
 template<typename T>
-class Sum{
-public:
+struct Sum
+{
 	T sum;
 	virtual void operator()(T& x){ sum += x;}
 };
 
+/** 以下实现了 >, >=, <, <=, ==, != 六种比较器
+ *  使用时, T代表的类型只需实现 <, <=, == 三种运算符即可.
+ */
 template<typename T>
-class Vector{
-	private:
-		int _size, _cap; 
-		T* _elem; //if not assign to 0, bug will occur in copy() funcation 
-	protected:
-		void copy(T* const a,int low,int high);
-		void expand();//double size
-		int bubble(int low,int high); //call by bubbleSort() 
-		void merge(int low, int mid, int high); //call by mergeSort ()
-		
-	public:
-		//init with n elements of the given value
-		Vector<T>(int cap=10, int size=0, T value=T()):_cap(cap),_size(size){ 
-			_elem = new T[cap];
-			int i;
-			for(i=0; i<size; ++i) _elem[i] = value; 
+struct Comparator
+{
+	virtual bool operator()(const T &a, const T &b)=0;
+};
+
+template<typename T>
+struct Greater : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return b<a;}
+};
+
+template<typename T>
+struct GreaterEqual : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return b<=a;}
+};
+
+template<typename T>
+struct Less : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return a<b;}
+};
+
+template<typename T>
+struct LessEqual : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return a<=b;}
+};
+
+template<typename T>
+struct Equal : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return a==b;}
+};
+
+template<typename T>
+struct NotEqual : Comparator<T>
+{
+	bool operator()(const T&a, const T&b){return !(a==b);}
+};
+
+
+template<typename T>
+class Vector
+{
+private:
+	int _size, _cap; 
+	T* _elem; //if not assign to 0, bug will occur in copy() funcation 
+protected:
+	void copy(T* const a,int low,int high);
+	void expand();//double size
+	int bubble(int low,int high); //call by bubbleSort() 
+	void merge(int low, int mid, int high); //call by mergeSort ()
+
+	/**使用给定的比较器将该vector中的元素与另一个vector中的对应元素逐一进行比较
+	 * 1.如果两个vector中的元素个数不相同, 则返回false
+	 * 2.只要有一对元素的比较结果为false, 就返回false
+	 * 3.当所有的比较结果都为true时,才返回true
+	 * 4.this指向的vector中的元素作为比较器的第一个参数,传入参数vector中的元素作为
+	 *   比较器的第二个参数
+	 */
+	template<typename CMP>
+	bool compareAll(const Vector& v, CMP cmp)
+	{
+		if(_size != v._size) return false;
+		for(int i=0; i<_size; ++i)
+			if( cmp(_elem[i], v._elem[i]) == false ) return false;
+		return true;
+	}
+
+public:
+	//init with n elements of the given value
+	Vector<T>(int cap=10, int size=0, T value=T()):_cap(cap),_size(size){ 
+		_elem = new T[cap];
+		int i;
+		for(i=0; i<size; ++i) _elem[i] = value; 
 //			for(; i<cap; ++i) _elem[i] = T();
-		}
-		//init from range a[low,high)
-		Vector<T>(T* const a, int low, int high):_elem(0) { copy(a,low,high); }
-		//init from range _elem[low,high) of another Vector
-		Vector<T>(const Vector<T>& v, int low,int high):_elem(0) { copy(v._elem,low,high);}
-		//init from another Vector
-		Vector<T>(const Vector<T>& v):_elem(0) { copy(v._elem, 0, v.size());} 
-		//assign operator
-		Vector<T>& operator=(const Vector<T>& v){ 
-			if(this == &v) return *this; //do not copy from itself
-			if(_elem) delete[] _elem;
-			_cap = v._cap;
-			_size = v._size;
-			_elem = new T[_cap];
-			for(int i=0; i<_size; ++i) _elem[i] = v._elem[i];
-			return *this; 
-		}
-		//destructor
-		~Vector<T>(){if(_elem) delete[] _elem; _elem=0;}
-		
-		//number of elements
-		int size()const {return _size;}
-		//length of internal array
-		int capacity()const {return _cap;}
-		//return true if size()==0, else false
-		bool empty()const {return _size==0;}
-		//clear all elements
-		void clear(){ _size=0; }
-		
-		// 0 <= i < _size 
-		T& operator[](int i){ 
-			stringstream ss;
-			require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
-			return _elem[i]; 
-		}
-		const T& operator[](int i)const{
-			stringstream ss;
-			require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
-			return _elem[i]; 
-		}
-		//insert element x to pos
-		int insert(int pos, const T& x);
-		//delete range, return (end - beg)
-		int remove(int beg,int end);
-		//remove element at pos, return _elem[pos]
-		T remove(int pos);
-		//liner find,return a pos 
-		int find(const T& x,int beg,int end) const;
-		//binary search
-		int binSearch(const T& x,int beg,int end)const;
-		//remove duplicates from the disordered sequence,return the num of elements removed
-		int deduplicate();
-		//check if elements is in order,return the number of reversed consecutive pairs
-		int disordered()const;
-		//remove the duplicates from the ordered sequence,return the num of elements removed
-		int uniquify();
-		//reserve place
-		bool reserve(int newCap);
-		
-		void push_back(const T& x) { insert(_size,x); }
-		void push_front(const T& x) { insert(0,x); }
-		void pop_back() { --_size; }
-		void pop_front() { remove(0); }
-		T back() { return _elem[_size-1]; }
-		T front() { return _elem[0]; }
-		
-		//traverse all elements
-		//function pointer
-		void traverse(void (*visit)(T&)){ for(int i=0;i<_size;++i) visit(_elem[i]); }
-		//use function object, more power then function pointer, return Functor
-		template<typename Functor>
-		Functor traverse(Functor op){for(int i=0;i<_size;++i) op(_elem[i]); return op; }
-		//apply ++ operation on every element in _elem[0,_size)
-		template<typename Functor>
-		Functor increase(Functor op = Increase<T>()){ return traverse( op ); }
-		//get sum of all elements through Functor
-		template<typename Functor>
-		Functor sum(Functor op = Sum<T>()){ return traverse( op ); }
-		
-		//sort algorithms
-		void bubbleSort(int low,int high);
-		void mergeSort(int low,int high);
+	}
+	//init from range a[low,high)
+	Vector<T>(T* const a, int low, int high):_elem(0) { copy(a,low,high); }
+	//init from range _elem[low,high) of another Vector
+	Vector<T>(const Vector<T>& v, int low,int high):_elem(0) { copy(v._elem,low,high);}
+	//init from another Vector
+	Vector<T>(const Vector<T>& v):_elem(0) { copy(v._elem, 0, v.size());} 
+	//assign operator
+	Vector<T>& operator=(const Vector<T>& v){ 
+		if(this == &v) return *this; //do not copy from itself
+		if(_elem) delete[] _elem;
+		_cap = v._cap;
+		_size = v._size;
+		_elem = new T[_cap];
+		for(int i=0; i<_size; ++i) _elem[i] = v._elem[i];
+		return *this; 
+	}
+	//destructor
+	~Vector<T>(){if(_elem) delete[] _elem; _elem=0;}
+	
+	//number of elements
+	int size()const {return _size;}
+	//length of internal array
+	int capacity()const {return _cap;}
+	//return true if size()==0, else false
+	bool empty()const {return _size==0;}
+	//clear all elements
+	void clear(){ _size=0; }
+	
+	// 0 <= i < _size 
+	T& operator[](int i){ 
+		stringstream ss;
+		require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
+		return _elem[i]; 
+	}
+	const T& operator[](int i)const{
+		stringstream ss;
+		require(0<= i && i<_size,(ss<<"error: index out of range size="<<_size<<" index="<<i,ss));
+		return _elem[i]; 
+	}
+	//insert element x to pos
+	int insert(int pos, const T& x);
+	//delete range, return (end - beg)
+	int remove(int beg,int end);
+	//remove element at pos, return _elem[pos]
+	T remove(int pos);
+	//liner find,return a pos 
+	int find(const T& x,int beg,int end) const;
+	//binary search
+	int binSearch(const T& x,int beg,int end)const;
+	//remove duplicates from the disordered sequence,return the num of elements removed
+	int deduplicate();
+	//check if elements is in order,return the number of reversed consecutive pairs
+	int disordered()const;
+	//remove the duplicates from the ordered sequence,return the num of elements removed
+	int uniquify();
+	//reserve place
+	bool reserve(int newCap);
+	
+	void push_back(const T& x) { insert(_size,x); }
+	void push_front(const T& x) { insert(0,x); }
+	void pop_back() { --_size; }
+	void pop_front() { remove(0); }
+	T back() { return _elem[_size-1]; }
+	T front() { return _elem[0]; }
+	
+	//traverse all elements
+	//function pointer
+	void traverse(void (*visit)(T&)){ for(int i=0;i<_size;++i) visit(_elem[i]); }
+	//use function object, more power then function pointer, return Functor
+	template<typename Functor>
+	Functor traverse(Functor op){for(int i=0;i<_size;++i) op(_elem[i]); return op; }
+	//apply ++ operation on every element in _elem[0,_size)
+	template<typename Functor>
+	Functor increase(Functor op = Increase<T>()){ return traverse( op ); }
+	//get sum of all elements through Functor
+	template<typename Functor>
+	Functor sum(Functor op = Sum<T>()){ return traverse( op ); }
+	
+	//sort algorithms
+	void bubbleSort(int low,int high);
+	void mergeSort(int low,int high);
+
+	//added 2018/7/22
+	bool operator==(const Vector& v) { return compareAll(v, Equal<T>());  		}
+
+	bool operator<(const Vector& v)  { return compareAll(v, Less<T>()); 		}
+
+	bool operator<=(const Vector& v) { return compareAll(v, LessEqual<T>()); 	}
+
+	bool operator>(const Vector& v)  { return compareAll(v, Greater<T>());   	}
+	
+	bool operator>=(const Vector& v) { return compareAll(v, GreaterEqual<T>()); }
+
 };
 
 /*
@@ -268,7 +341,7 @@ otherwise copy all elements to new array and return true
 */
 template<typename T>
 bool Vector<T>::reserve(int newCap){
-	if(newCap <= _size || newCap <= _cap) return false;
+	if(newCap <= _cap) return false;
 	T* arr = new T[newCap];
 	if(arr == 0) return false;
 	for(int i=0; i<_size; ++i) arr[i] = _elem[i];
@@ -318,4 +391,6 @@ void Vector<T>::merge(int low,int mid,int high){
 	delete[] left;
 }
 
+
+NamespaceEnd
 #endif 

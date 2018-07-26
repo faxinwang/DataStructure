@@ -1,7 +1,8 @@
 #include <iostream>
-#include "MatrixTriple.hpp"
+#include "MatrixTriplet.hpp"
 #include "Matrix.hpp"
 using namespace std;
+using namespace wfx;
 
 template<typename T>
 void print(Matrix<T>& m, string str=""){

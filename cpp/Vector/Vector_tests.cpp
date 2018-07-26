@@ -2,6 +2,7 @@
 #include<string>
 #include"Vector.hpp"
 using namespace std;
+using namespace wfx;
 
 template<typename T>
 void print(Vector<T>& v,string hint){

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "MatrixGraph.hpp"
 using namespace std;
+using namespace wfx;
 
 void visit(int x){ cout<<x<<' '; }
 

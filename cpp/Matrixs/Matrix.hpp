@@ -2,7 +2,9 @@
 #define _Matrix_h_
 
 #include "../Vector/Vector.hpp"
-#include "../require.hpp"
+#include "../util/require.hpp"
+
+NamespaceBegin
 
 /*
 implement Matrix using Vector of Vectors.
@@ -201,5 +203,5 @@ public:
 	}
 };
 
-
+NamespaceEnd
 #endif

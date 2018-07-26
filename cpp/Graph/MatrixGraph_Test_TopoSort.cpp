@@ -2,6 +2,7 @@
 #include<string>
 #include"MatrixGraph.hpp"
 using namespace std;
+using namespace wfx;
 
 void visit(string &x){ cout<<x<<' '; }
 

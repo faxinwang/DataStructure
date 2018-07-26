@@ -1,7 +1,9 @@
 #include<iostream>
 #include<string>
+#include<functional>
 #include "DLList.hpp"
 using namespace std;
+using namespace wfx;
 
 //print all elements in lst
 template<typename T>

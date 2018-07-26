@@ -1,7 +1,19 @@
+
+/**
+ * author : wfx
+ * description:
+ *      用数组实现了一个循环队列, 当往队列中插入元素,且队列已满时,
+ *      会自动扩充数组的长度,从而保证总是可以容纳新入队的元素.
+ */
+
+
+
 #ifndef _CircularQueue_H_
 #define _CircularQueue_H_
 
-#include "../require.hpp"
+#include "../util/require.hpp"
+
+NamespaceBegin
 
 template<class T>
 class CircularQueue{
@@ -29,7 +41,8 @@ public:
         :_cap(capacity),    //the size of the array
          _elem(new T[capacity]), //the array to place elements
          _front(0),         //point to the index of the first element in the queue
-         _rear(0){}         //point to the index AFTER the last element in the queue
+         _rear(0)           //point to the index AFTER the last element in the queue
+        {}
 
     //copy constructor
     CircularQueue(const CircularQueue& q){
@@ -86,5 +99,6 @@ public:
 
 };
 
+NamespaceEnd
 
 #endif

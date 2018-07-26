@@ -1,3 +1,8 @@
+
+#define NamespaceBegin namespace wfx{
+#define NamespaceEnd }
+
+
 //test for error conditions in programs
 #ifndef REQUIRE_H
 #define REQUIRE_H
@@ -9,6 +14,8 @@
 #include<string>
 #include<sstream>
 using std::stringstream;
+
+NamespaceBegin
 
 inline void require(bool requirement,
 //					const std::string& msg="requirement failed")
@@ -72,4 +79,6 @@ inline void assure(std::fstream& inout,const std::string& filename=""){
 	} 
 } 
 
+NamespaceEnd
 #endif
+

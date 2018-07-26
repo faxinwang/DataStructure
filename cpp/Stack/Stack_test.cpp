@@ -2,6 +2,7 @@
 #include <string>
 #include "Stack.hpp"
 using namespace std;
+using namespace wfx;
 
 template<class T>
 void popN(Stack<T> &s, int n, string str=""){
@@ -10,7 +11,7 @@ void popN(Stack<T> &s, int n, string str=""){
         cout<<"stack is empty"<<endl;
         return;
     }
-    cout<<"[ pop "<<n<<" ]"<<endl;
+    cout<<"[ pop "<<n<<" ] " << str<<endl;
     cout<<"size: "<<s.size()<<endl;
     cout<<"empty: "<<boolalpha<<s.empty()<<endl;
     cout<<"top :"<<s.top()<<endl;
@@ -25,8 +26,9 @@ void pushN(Stack<T> &s,T from, T to){
 
 int main(){
     Stack<int> s;
+	s.reserve(15);
     pushN(s, 1, 15);
-    popN(s,5,"after push from 'A' to 'J'" );
+    popN(s,5,"after push from 1 to 15" );
     /*
     [ pop 5 ]
 	size: 15
@@ -40,7 +42,7 @@ int main(){
     Stack<int> s3;
     s3 = s2;
     
-    popN(s,15,"after push from 'b' to 'z'");
+    popN(s,15,"after push from 20 to 30");
     /*
     [ pop 15 ]
 	size: 21

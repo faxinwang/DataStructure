@@ -2,10 +2,12 @@
 #define MatrixGraph_hpp
 
 #include "../Vector/Vector.hpp"
-#include "../require.hpp"
+#include "../util/require.hpp"
 #include "../Queue/Queue.hpp"
 #include "../Stack/Stack.hpp"
 #include <sstream>
+
+NamespaceBegin
 
 template<typename T>
 class MatrixGraph{
@@ -292,6 +294,7 @@ public:
 };
 
 
+NamespaceEnd
 #endif
 
 

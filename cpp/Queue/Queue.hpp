@@ -2,6 +2,9 @@
 #define Queue_h
 
 #include "../List/DLList.hpp"
+#include "../util/require.hpp"
+
+NamespaceBegin
 
 /*
 Queue, an adapter container, use DLList as the default container.
@@ -33,5 +36,7 @@ class Queue{
 		
 		bool empty(){ return _c.empty(); }
 };
+
+NamespaceEnd
 
 #endif 

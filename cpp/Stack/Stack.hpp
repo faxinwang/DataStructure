@@ -2,6 +2,10 @@
 #define Stack_h
 
 #include "../Vector/Vector.hpp"
+#include "../util/require.hpp"
+#include<typeinfo>
+
+NamespaceBegin
 
 /* use Vector as the default container */
 template<typename T, typename Container = Vector<T> >
@@ -36,6 +40,18 @@ class Stack{
 		
 		//return trun if stack is empty, else false.
 		bool empty(){ return _c.empty(); }
+
+		//预留一些内存空间,当容器为vector时才有效.
+		void reserve(int n)
+		{
+			if( typeid(this) == typeid(Vector<T>) )
+			{
+				_c.reserve(n);
+			}
+		}
+
 };
 
+
+NamespaceEnd
 #endif
