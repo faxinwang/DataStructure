@@ -57,8 +57,9 @@ int main()
     string post = "PHQRIDSJTKEBUVLWMFXNYZOGCA";
     string level = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     
-    BinaryTree<char> bt = BinaryTree<char>::BuildFromPreInOrder(pre.c_str(), in.c_str(),26);
-    TNode*A = bt.Root();
+    Node<char>* root = Node<char>::BuildFromPreInOrder(pre.c_str(), in.c_str(),26);
+    BinaryTree<char> bt(root);
+    TNode*A = root;
     cout<<"---------Build tree from PreOrder and InOrder---------"<<endl;
 
     cout<<"Case#"<< kiss++ <<": test number of nodes"<<endl;
@@ -141,8 +142,9 @@ int main()
     */
 
 
-    bt = BinaryTree<char>::BuildFromPostInOrder(post.c_str(),in.c_str(),26);
-    A = bt.Root();
+    root = Node<char>::BuildFromPostInOrder(post.c_str(),in.c_str(),26);
+    BinaryTree<char> bt2(root);
+    A = root;
     cout<<"---------Build tree from PostOrder and InOrder---------"<<endl;
 
     cout<<"Case#"<< kiss++ <<": test number of nodes"<<endl;
@@ -173,7 +175,7 @@ int main()
 
     cout<<"Case#"<< kiss++ <<": test levelOrder traverse"<<endl;
     TraverseOrderTest<char> levelOrder2(level.c_str(), 26);
-    bt.LevelOrderGo(levelOrder2);
+    bt2.LevelOrderGo(levelOrder2);
     cout<<"expected:";   levelOrder2.printExpected(); cout<<endl;
     cout<<"output  :";   levelOrder2.printOutput();   cout<<endl;
     cout<<(levelOrder2.test() ? "PASS!" : "Failed!")<<endl<<endl;
@@ -187,7 +189,7 @@ int main()
     
     cout<<"Case#"<< kiss++ <<": test PreOrder traverse"<<endl;
     TraverseOrderTest<char> preOrder2(pre.c_str(), 26);
-    bt.PreOrderGo(preOrder2);
+    bt2.PreOrderGo(preOrder2);
     cout<<"expected:";   preOrder2.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder2.printOutput();   cout<<endl;
     cout<<(preOrder2.test() ? "PASS!" : "Failed!")<<endl<<endl;
@@ -200,7 +202,7 @@ int main()
 
     cout<<"Case#"<< kiss++ <<": test InOrder traverse"<<endl;
     TraverseOrderTest<char> inOrder2(in.c_str(), 26);
-    bt.InOrderGo(inOrder2);
+    bt2.InOrderGo(inOrder2);
     cout<<"expected:";   inOrder2.printExpected(); cout<<endl;
     cout<<"output  :";   inOrder2.printOutput();   cout<<endl;
     cout<<(inOrder2.test() ? "PASS!" : "Failed!")<<endl<<endl;
@@ -213,7 +215,7 @@ int main()
 
     cout<<"Case#"<< kiss++ <<": test PostOrder traverse"<<endl;
     TraverseOrderTest<char> postOrder2(post.c_str(), 26);
-    bt.PostOrderGo(postOrder2);
+    bt2.PostOrderGo(postOrder2);
     cout<<"expected:";   postOrder2.printExpected(); cout<<endl;
     cout<<"output  :";   postOrder2.printOutput();   cout<<endl;
     cout<<(postOrder2.test() ? "PASS!" : "Failed!")<<endl<<endl;

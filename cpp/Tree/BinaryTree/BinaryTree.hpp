@@ -16,21 +16,20 @@
 NamespaceBegin
 
 /**
- *  二叉树类模板, 提供基本的二叉树建立, 遍历, 旋转等方法.
+ *  二叉树类模板, 提供基本的二叉树建立, 遍历, 旋转, 复制, 相等判断等方法.
  *  
  * 成员变量:
  * _root : 二叉树根节点
  * 
  * 方法:
  * BinaryTree() : 默认构造函数, 生成的二叉树对象中包含一颗空二叉树
- * BinaryTree(T e) : 使用给定的值构造二叉树对象, 其中包含一个根结点. 
+ * BinaryTree(Node<T>* rt)          : 将给定的结点作为根结点构造二叉树
  * BinaryTree(const BinaryTree& bt) : 拷贝构函数
  * operator=(const BinaryTree& bt)  : 赋值运算符
  * operator==(const BinaryTree& bt) : 相等运算符
  * 
  * Empty() : 如果二叉树为空, 返回ture, 否则返回false
  * Size() : 返回二叉树节点的个数
- * Root() : 返回根结点的常引用
  * Clear(): 清空二叉树,删除所有的结点
  * 
  * PreOrder() : 先序遍历,循环实现
@@ -38,19 +37,15 @@ NamespaceBegin
  * PostOrder() : 后续遍历,递归实现
  * LevelOrder(): 层序遍历, 循环实现
  * 
- * RotateAt() : 在某个结点处旋转子树
- * 
- * BuildFromPreInOrder() : 根据先序序列和中序序列构建二叉树
- * BuildFromPostInOrder(): 根据后序序列和中序序列构建二叉树
  */
 
 template<typename T>
 class BinaryTree
 {
-public:  //私有成员变量
+protected: 
     Node<T> *_root;
 
-private:  //私有方法
+private:  //私有静态方法
 
     template<typename VIS>
     static void PostOrder(Node<T>* rt, VIS& visit)
@@ -73,57 +68,6 @@ private:  //私有方法
             delete rt;
             rt = 0;
         }
-    }
-
-    /**根据前序和中序序列恢复二叉树
-     * 1.前序序列的第0个元素即为根结点
-     * 2.通过根结点寻找中序序列中根结点的位置t
-     * 3.用前序序列的子序列[1,1+t]和中序序列的子序列[0,t-1]递归构建左子树
-     * 4.用前序序列的子序列[2+t]
-     * 
-     * 前序序列:[root, [left child sequence], [right child sequence]]
-     *           0,    1                  t,  1+t                n-1
-     * 中序序列:[[left child sequence], root, [right child sequence]]
-     *           0                 t-1 ,  t,  1+t                n-1
-     * 左子树长度: t
-     * 右子树长度: n-1-t
-     */
-    static Node<T>* BuildFromPreIn(const T* pre,const  T* in, int n, Node<T>* parent=NULL)
-    {
-        if(n <= 0) return 0;
-        Node<T>* root = new Node<T>(pre[0], parent);
-        int t = 0;
-        while(pre[0] != in[t] && t < n) ++t;
-        root->LC = BuildFromPreIn(pre+1, in, t, root);
-        root->RC = BuildFromPreIn(pre+1+t, in+1+t, n-1-t, root);
-        root->UpdateHeight();
-        return root;
-    }
-
-    /**根据中序和后序序列恢复二叉树
-     * 1.后序序列的最后一个元素即为根结点
-     * 2.通过根结点寻找中序序列中根结点的位置t
-     * 3.用后序序列的子序列[0,t-1]和中序序列的子序列[0,t-1]递归构建左子树
-     * 4.用后序序列的子序列[t,n-2]和中序序列的子序列[t+1,n-1]递归构建右子树
-     * 
-     * 后序序列:[[left child sequence], [right child sequence], root]
-     *          0                  t-1, t                  n-2,  n-1
-     * 中序序列:[[left child sequence], root, [right child sequence]]
-     *          0                  t-1,  t ,  t+1                n-1
-     * 
-     * 左子树长度:t
-     * 右子树长度:n-1-t
-     */
-    static Node<T>* BuildFromPostIn(const T* post,const  T* in, int n, Node<T>*parent=NULL)
-    {
-        if(n <= 0) return 0;
-        Node<T>* root = new Node<T>(post[n-1], parent);
-        int t=0;
-        while(post[n-1] != in[t] && t < n) ++t;
-        root->LC = BuildFromPostIn(post,in,t, root);
-        root->RC = BuildFromPostIn(post+t,in+t+1, n-1-t, root);
-        root->UpdateHeight();
-        return root;
     }
 
     //复制二叉树, 只复制树结构, 不复制二叉树的其他成员变量
@@ -150,25 +94,11 @@ private:  //私有方法
                 Equal(rt1->RC, rt2->RC);
     }
 
-    template<typename Pointer>
-    static void SwapPtr(Pointer& a, Pointer& b)
-    {
-        Pointer t = a;
-        a = b;
-        b = t;
-    }
-
-
 public:  //公开方法
     
     //无参构造函数, 建立一颗空树
     BinaryTree() 
         :_root(NULL)
-        {}
-
-    //有参构造函数, 参数作为根节点的值
-    BinaryTree(const T& e)
-        :_root(new Node<T>(e))
         {}
     
     /**通过给定的结点作为二叉树的根结点.
@@ -182,8 +112,12 @@ public:  //公开方法
     //虚析构函数
     virtual ~BinaryTree(){ Clear(_root); }
 
-    //拷贝构造函数, 调用赋值函数
-    BinaryTree(const BinaryTree& bt) { *this = bt; }
+    /**拷贝构造函数, 调用赋值函数
+     * 这里一定要将_root初始化为空,否则_root会是一个随机值.然后
+     * 在调用赋值运算符时,两个if判断基本都不会成立,进而在Clear(_root)
+     * 时,会去删除一块随机的内存,从而导致程序出错!!!
+     */
+    BinaryTree(const BinaryTree& bt):_root(NULL) { *this = bt; }
 
     //赋值运算符
     BinaryTree& operator=(const BinaryTree& bt)
@@ -203,13 +137,10 @@ public:  //公开方法
         if(this == &bt) return true; //同一个对象,必定相等
         return Equal(_root, bt._root); //否则再比较树
     }
-    
-    //返回根结点指针
-    Node<T>* Root()const { return _root;}
 
     bool Empty()const { return _root==NULL; }
 
-    int Size()const { return _root==NULL? 0 : _root->Size(); }
+    virtual int Size()const { return _root==NULL? 0 : _root->Size(); }
 
     void Clear() { Clear(_root) ;}
 
@@ -287,62 +218,6 @@ public:  //公开方法
             if(x->RC) Q.push(x->RC);
         }
     }
-
-    /** 根据二叉树的先序遍历序列和中序遍历序列构建出该二叉树
-     *  pre : 先序遍历序列
-     *  in  : 中序遍历序列
-     *  n   : 序列长度
-     * return : 新构建的二叉树对象
-     */
-    static BinaryTree BuildFromPreInOrder(const T *pre, const T *in, int n)
-    {
-        BinaryTree bt;
-        bt._root = BuildFromPreIn(pre,in,n);
-        //bt._size = n;
-        return bt;
-    }
-
-    /** 根据二叉树的后序遍历序列和中序遍历序列构建出该二叉树
-     *  post : 后序遍历序列
-     *  in   : 中序遍历序列
-     *  n    : 序列长度
-     * return : 新构建的二叉树对象
-     */
-    static BinaryTree BuildFromPostInOrder(const T *post, const T *in, int n)
-    {
-        BinaryTree bt;
-        bt._root = BuildFromPostIn(post,in,n);
-        //bt._size = n;
-        return bt;
-    }
-
-    /**旋转以参数rt为根结点的子树
-     * 1.用临时变量保存左子树.
-     * 2.让左孩子指针指向右子树
-     * 3.让右孩子指针指向左子树(临时变量)
-     * 4.递归旋转左右子树
-     */
-    static void RotateAt(Node<T>* rt, bool applyToChild=true)
-    {
-        if(rt)
-        {
-            SwapPtr(rt->LC, rt->RC);
-            if(applyToChild)
-            {
-                Queue<Node<T>*> Q;
-                if(rt->LC) Q.push(rt->LC);
-                if(rt->RC) Q.push(rt->RC);
-                while(!Q.empty())
-                {
-                    rt = Q.pop();
-                    SwapPtr(rt->LC, rt->RC);
-                    if(rt->LC) Q.push(rt->LC);
-                    if(rt->RC) Q.push(rt->RC);
-                }
-            }
-        }
-    }
-
 };
 
 

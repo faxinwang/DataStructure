@@ -27,12 +27,15 @@ postOrder : PHQRIDSJTKEBUVLWMFXNYZOGCA
 levelOrder: ABCDEFGHIJKLMNOPQRSTUVWXYZ
 */
 
-BinaryTree<char> InitTree()
+
+int main()
 {
-    BinaryTree<char> bt('A');
-    TNode *A = bt.Root();
-	  TNode *B = A->InsertLeftChild('B');
-	  TNode *C = A->InsertRightChild('C');
+    int kiss = 1;
+    TNode *A = new TNode('A');
+    BinaryTree<char> bt(A);
+
+    TNode *B = A->InsertLeftChild('B');
+    TNode *C = A->InsertRightChild('C');
     TNode *D = B->InsertLeftChild('D');
     TNode *E = B->InsertRightChild('E');
     TNode *F = C->InsertLeftChild('F');
@@ -56,13 +59,6 @@ BinaryTree<char> InitTree()
     TNode *X = N->InsertRightChild('X');
     TNode *Y = O->InsertLeftChild('Y');
     TNode *Z = O->InsertRightChild('Z');
-    return bt;
-}
-
-int main()
-{
-    int kiss = 1;
-    BinaryTree<char> bt = InitTree();
 
     cout<<"Case#"<< kiss++ <<": test tree empty"<<endl;
     cout<<"expected: false"<<endl;
@@ -88,8 +84,8 @@ int main()
 
     cout<<"Case#"<< kiss++ <<": test height of root node"<<endl;
     cout<<"expected : 4"<<endl;
-    cout<<"output : "<<bt.Root()->height<<endl;
-    cout<<(bt.Root()->height==4? "PASS!" : "Failde!")<<endl<<endl;
+    cout<<"output : "<<A->height<<endl;
+    cout<<(A->height==4? "PASS!" : "Failde!")<<endl<<endl;
     /*
     Case#3: test height of root node
     expected : 4
@@ -97,14 +93,13 @@ int main()
     PASS!
     */
 
-    /**此测试用例需要给g++编译器传递 -pg 参数才可以正常运行
-     * 此处的赋值运算实际调用的是拷贝构造函数, 然后拷贝构造函数里面其实
+    /**此处的赋值运算实际调用的是拷贝构造函数, 然后拷贝构造函数里面其实
      * 是调用了赋值运算符(内部调用了Copy私有函数进行复制).
      */
     cout<<"Case#"<< kiss++ <<": test assignment operator: bt2 = bt"<<endl;
     BinaryTree<char> bt2 = bt;
     int bt2Nodes = bt2.Size();
-    int bt2RootHeight=bt2.Root()->height;
+    int bt2RootHeight=A->height;
     cout<<"bt2 nodes : "<<bt2Nodes<<endl;
     cout<<"bt2 root height:"<<bt2RootHeight<<endl;
     cout<<(bt2Nodes==26 && bt2RootHeight==4? "PASS!" : "Failed!")<<endl<<endl;

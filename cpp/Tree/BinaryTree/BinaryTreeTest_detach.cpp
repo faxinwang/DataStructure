@@ -109,8 +109,9 @@ int main()
     string pre5 = "AECGF";
     string in5 = "ACGEF";
 
-    BinaryTree<char> bt('A');
-    TNode* A = bt.Root();
+    TNode* A = new TNode('A');
+    BinaryTree<char> bt(A);
+    
     TNode* B = A->InsertLeftChild('B');
     TNode* C = A->InsertRightChild('C');
     TNode* D = B->InsertLeftChild('D');

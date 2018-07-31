@@ -65,9 +65,9 @@ int main()
 
     // BinaryTree<char> bt = BinaryTree<char>::BuildFromPreInOrder(pre,in,26);
     // TNode *A = bt.Root();
-    
-    BinaryTree<char> bt('A');
-    TNode *A = bt.Root();
+    Node<char> *root = new Node<char>('A');
+    BinaryTree<char> bt(root);
+    TNode *A = root;
 	TNode *B = A->InsertLeftChild('B');
 	TNode *C = A->InsertRightChild('C');
     TNode *D = B->InsertLeftChild('D');

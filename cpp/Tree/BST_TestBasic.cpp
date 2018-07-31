@@ -19,16 +19,16 @@ struct TestEqualWithSet
     void insert(T x)
     {
         st.insert(x);
-        bst.insert(x);
+        bst.Insert(x);
     }
 
     void remove(T x)
     {
         st.erase(x);
-        bst.remove(x);
+        bst.Remove(x);
     }
-
-    Node<T>* search(T x){ return bst.search(x); }
+    
+    typename BST<T>::Iterator search(T x){ return bst.Search(x); }
     
 
     void operator()(const T& x)
@@ -37,10 +37,7 @@ struct TestEqualWithSet
         v2.push_back(x); 
     }
 
-    bool test()
-    {
-        return v1==v2;
-    }
+    bool test() { return v1==v2; }
 
     void printSet() 
     {
@@ -53,6 +50,7 @@ struct TestEqualWithSet
         }
         cout<<endl;
     }
+    
     void printBST()
     { 
         v2.clear();
@@ -67,7 +65,8 @@ int main(){
     Vector<int> numbers;
     int kiss=1;
     int a[]={4,2,6,9, 20, 10, 6, 11, 65, 100, 27, 1, 0, -4, -5, 45, 55, 19};
-    for(int i=0,n=sizeof(a)/sizeof(a[0]); i<n; ++i ) tester.insert(a[i]);
+    int numOfElem = sizeof(a)/sizeof(a[0]);
+    for(int i=0; i<numOfElem; ++i ) tester.insert(a[i]);
 
     cout<<"Case#"<<kiss++ <<" after inserted some elements :"<<endl;
     cout<<"expected : "; tester.printSet();
@@ -82,9 +81,22 @@ int main(){
 
     cout<<"Case#"<<kiss++ <<" test if 11 exists :"<<endl;
     cout<<"expected : false"<<endl;
-    bool existsFlag = tester.search(11)!=NULL;
-    cout<<"output   : "<<(existsFlag? "true" : "false")<<endl;
-    cout<<(existsFlag==false? "PASS!" : "Failed")<<endl<<endl;
+    typename BST<int>::Iterator pos = tester.search(11);
+    bool existFlag = pos.NotNull() && *pos==11;
+    cout<<"output   : "<<(existFlag? "true" : "false")<<endl;
+    cout<<(existFlag==false? "PASS!" : "Failed")<<endl<<endl;
+
+    cout<<"Case#"<<kiss++ <<" test if 100 exists :"<<endl;
+    cout<<"expected : true"<<endl;
+    pos = tester.search(100);
+    existFlag = pos.NotNull() && *pos==100;
+    cout<<"output   : "<<(existFlag? "true" : "false")<<endl;
+    cout<<(existFlag==true? "PASS!" : "Failed")<<endl<<endl;
+
+    cout<<"Case#"<<kiss++ <<" test tree size :"<<endl;
+    cout<<"expected : 16"<<endl;
+    cout<<"output   : "<<tester.bst.Size()<<endl;
+    cout<<(tester.bst.Size()==16? "PASS!" : "Failed")<<endl<<endl;
 
     cout<<"Case#"<<kiss++ <<" after removed 55 :"<<endl;
     tester.remove(55);
@@ -182,6 +194,11 @@ int main(){
     cout<<"output   : ";   tester.printBST();
     cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl; 
 
+    cout<<"Case#"<<kiss++ <<" test if tree is empty:"<<endl;
+    cout<<"expected : true"<<endl;
+    cout<<"output   : "<<(tester.bst.Empty()?"true" : "false")<<endl;
+    cout<<(tester.bst.Empty()==true? "PASS!" : "Failed")<<endl<<endl; 
+
     return 0;
 }
 
@@ -201,84 +218,99 @@ expected : false
 output   : false
 PASS!
 
-Case#4 after removed 55 :
+Case#4 test if 100 exists :
+expected : true
+output   : true
+PASS!
+
+Case#5 test tree size :
+expected : 16
+output   : 16
+PASS!
+
+Case#6 after removed 55 :
 expected : -5 -4 0 1 2 4 6 9 10 19 20 27 45 65 100
 output   : -5 -4 0 1 2 4 6 9 10 19 20 27 45 65 100
 PASS!
 
-Case#5 after removed 10 :
+Case#7 after removed 10 :
 expected : -5 -4 0 1 2 4 6 9 19 20 27 45 65 100
 output   : -5 -4 0 1 2 4 6 9 19 20 27 45 65 100
 PASS!
 
-Case#6 after removed 6 :
+Case#8 after removed 6 :
 expected : -5 -4 0 1 2 4 9 19 20 27 45 65 100
 output   : -5 -4 0 1 2 4 9 19 20 27 45 65 100
 PASS!
 
-Case#7 after removed 19 :
+Case#9 after removed 19 :
 expected : -5 -4 0 1 2 4 9 20 27 45 65 100
 output   : -5 -4 0 1 2 4 9 20 27 45 65 100
 PASS!
 
-Case#8 after removed 20 :
+Case#10 after removed 20 :
 expected : -5 -4 0 1 2 4 9 27 45 65 100
 output   : -5 -4 0 1 2 4 9 27 45 65 100
 PASS!
 
-Case#9 after removed 0 :
+Case#11 after removed 0 :
 expected : -5 -4 1 2 4 9 27 45 65 100
 output   : -5 -4 1 2 4 9 27 45 65 100
 PASS!
 
-Case#10 after removed 27 :
+Case#12 after removed 27 :
 expected : -5 -4 1 2 4 9 45 65 100
 output   : -5 -4 1 2 4 9 45 65 100
 PASS!
 
-Case#11 after removed 45 :
+Case#13 after removed 45 :
 expected : -5 -4 1 2 4 9 65 100
 output   : -5 -4 1 2 4 9 65 100
 PASS!
 
-Case#12 after removed 4 :
+Case#14 after removed 4 :
 expected : -5 -4 1 2 9 65 100
 output   : -5 -4 1 2 9 65 100
 PASS!
 
-Case#13 after removed 9 :
+Case#15 after removed 9 :
 expected : -5 -4 1 2 65 100
 output   : -5 -4 1 2 65 100
 PASS!
 
-Case#14 after removed -5 :
+Case#16 after removed -5 :
 expected : -4 1 2 65 100
 output   : -4 1 2 65 100
 PASS!
 
-Case#15 after removed 1:
+Case#17 after removed 1:
 expected : -4 2 65 100
 output   : -4 2 65 100
 PASS!
 
-Case#16 after removed 2:
+Case#18 after removed 2:
 expected : -4 65 100
 output   : -4 65 100
 PASS!
 
-Case#17 after removed -4:
+Case#19 after removed -4:
 expected : 65 100
 output   : 65 100
 PASS!
 
-Case#18 after removed 100:
+Case#20 after removed 100:
 expected : 65
 output   : 65
 PASS!
 
-Case#19 after removed 65:
+Case#21 after removed 65:
 expected :
 output   :
+PASS!
+
+Case#22 test if tree is empty:
+expected : true
+output   : true
 PASS!
 
 */

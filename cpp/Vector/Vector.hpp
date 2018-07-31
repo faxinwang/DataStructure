@@ -185,7 +185,7 @@ public:
 	void bubbleSort(int low,int high);
 	void mergeSort(int low,int high);
 
-	//added 2018/7/22
+	//added on 2018/7/22
 	bool operator==(const Vector& v) { return compareAll(v, Equal<T>());  		}
 
 	bool operator<(const Vector& v)  { return compareAll(v, Less<T>()); 		}
@@ -196,6 +196,11 @@ public:
 	
 	bool operator>=(const Vector& v) { return compareAll(v, GreaterEqual<T>()); }
 
+	//added on 
+	void reverse()
+	{
+		for(int i=0,j=_size-1; i<j; ++i,--j) swap(_elem[i],_elem[j]);
+	}
 };
 
 /*

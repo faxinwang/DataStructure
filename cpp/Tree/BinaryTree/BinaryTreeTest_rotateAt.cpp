@@ -81,8 +81,9 @@ int main()
     string pre3 = "ABEDCFG";
     string in3 = "EBDAGFC";
     
-    BinaryTree<char> bt('A');
-    TNode* A = bt.Root();
+    Node<char>* root = new Node<char>('A');
+    BinaryTree<char> bt(root);
+    TNode* A = root;
     TNode* B = A->InsertLeftChild('B');
     TNode* C = A->InsertRightChild('C');
     TNode* D = B->InsertLeftChild('D');
@@ -117,7 +118,7 @@ int main()
     */
 
     cout<<"---------------Rotate At A, applyToChild = true------------------"<<endl;
-    bt.RotateAt(A, true);
+    A->Rotate(true);
 
     cout<<"Case#"<< kiss++ <<" test PreOrder "<<endl;
     TraverseOrderTest<char> preOrder2(pre2.c_str(),7);
@@ -147,7 +148,7 @@ int main()
     */
 
     cout<<"---------------Rotate At A, applyToChild = false------------------"<<endl;
-    bt.RotateAt(A, false);
+    A->Rotate(false);
 
     cout<<"Case#"<< kiss++ <<" test PreOrder "<<endl;
     TraverseOrderTest<char> preOrder3(pre3.c_str(),7);
