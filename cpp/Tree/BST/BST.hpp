@@ -344,7 +344,7 @@ public:  //公共接口
     virtual Iterator Search(const T& e)
     {
         Node<T>* pos = SearchIn(e, this->_root, _hot = NULL);
-        return Iterator(pos);
+        return Iterator(NULL, pos, NULL);
     }
 
 
