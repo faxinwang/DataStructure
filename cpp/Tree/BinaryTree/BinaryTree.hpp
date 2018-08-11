@@ -6,12 +6,12 @@
 #ifndef _BinaryTree_
 #define _BinaryTree_
 
-//计算结点的高度, 叶子结点的高度定义为0, 空结点的高度定义为-1
-#include<algorithm>  //用到std::max()函数
+
 #include "../../Stack/Stack.hpp"
 #include "../../Queue/Queue.hpp"
 #include "Node.hpp"
 #include "../../util/require.hpp"
+#include <iostream>
 
 NamespaceBegin
 
@@ -37,6 +37,8 @@ NamespaceBegin
  * PostOrder() : 后续遍历,递归实现
  * LevelOrder(): 层序遍历, 循环实现
  * 
+ * 
+ * 
  */
 
 template<typename T>
@@ -45,7 +47,7 @@ class BinaryTree
 protected: 
     Node<T> *_root;
 
-private:  //私有静态方法
+protected:  //私有静态方法
 
     template<typename VIS>
     static void PostOrder(Node<T>* rt, VIS& visit)

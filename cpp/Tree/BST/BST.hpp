@@ -1,8 +1,8 @@
 #ifndef _BST_H_
 #define _BST_H_
 
-#include "BinaryTree/BinaryTree.hpp"
-#include "../util/require.hpp"
+#include "../BinaryTree/BinaryTree.hpp"
+#include "../../util/require.hpp"
 
 NamespaceBegin
 
@@ -24,17 +24,35 @@ struct Entry{
 };
 
 
-/**BinarySearchTree提供了如下三个API
- * BSTNode* search(const T &e) : 查找BST中是否存在给定元素, 返回该元素所在的结点
- * BSTNode* insert(cosnt T &e) : 向BST中插入元素，返回该元素所在结点（不重复插入）
- * bool remove(const T &e)     : 删除给定元素，成功返回true，否则返回false
+/**BinarySearchTree提供了如下API
+ * Iterator* Search(const T &e) : 查找BST中是否存在给定元素, 返回该元素所在的结点
+ * void Insert(cosnt T &e)      : 向BST中插入元素，返回该元素所在结点（不重复插入）
+ * bool Remove(const T &e)      : 删除给定元素，成功返回true，否则返回false
+ * int Size()  : 返回结点个数
+ * Iterator Begin() : 返回指向第一个元素的迭代器, 通过 ++it 配合 End() 向右遍历
+ * Iterator RBegin(): 返回指向末尾元素的迭代器, 通过 --it 配合 End() 向左遍历
+ * Iterator End()   : 返回表示遍历结尾的哨兵迭代器
+ * Iterator Head()  : 返回指向第一个元素前面一个位置的迭代器, 通过 Next() 向右遍历,无需与End()比较
+ * Iterator Tail()  : 返回指向最后一个元素后一个位置的迭代器, 通过 Prev() 向左遍历,无需与End()比较
+ * 
+ * protected 方法:
+ * Node<T>*& SearchIn(const T& e): 返回指向元素为e的结点的指针的引用
+ * static Node<T>* RemoveAt(Node<T>* &x, Node<T>*& hot) BST删除结点的算法实现
+ * Node<T>* connect34() : 将需要进行zigzag或zagzig旋转所涉及到的点直接连接成最终的平衡态
+ * Node<T>* zig() :  对给定的结点进行zig旋转
+ * Node<T>* zag() :  对给定的结点进行zag旋转
+ * 
+ * 
+ * 详细使用方法参见测试文件:
+ * BST_TestIterator.cpp
+ * BST_TestBasic.cpp
  */
 
 //继承自BinaryTree类模板
 template<typename T>
 class BST: public BinaryTree<T>
 {
-public: 
+public:  //An implementation of the internal iterator
     class Iterator
     {
     private:
@@ -87,7 +105,7 @@ protected:  //成员变量
     Node<T>* _hot; //始终指向搜索结束时的父亲结点
     int _size;  //由于现在所有的插入和删除都是通过BST进行的, 因此使用变量保存结点个数会更高效
 
-protected:  //static 成员方法
+protected: 
 
     /**从根结点开始查找给定元素,返回该元素所在结点指针的引用
      * 1.如果目标结点存在, 则返回指向该结点指针的引用
@@ -98,7 +116,6 @@ protected:  //static 成员方法
      * e  : 待查找元素
      * hot: 记忆热点，不管查找成功还是失败，总是指向所返回结点的父结点
      * TC = O(h) ,h为返回结点在树中的深度
-     * 
      * 
     */
     static Node<T>*& SearchIn(const T& e, Node<T>*& rt, Node<T>*& hot)
@@ -166,13 +183,143 @@ protected:  //static 成员方法
         return next;
     }
 
-public:
+protected: //methods for Balanced Binary Search Tree(BBST) subclasses
+
+    /*************** The follow methods are for BBST subclasses ****************/
+
+    /**after rotate, the final structure of the rotated subtree must be as the following
+     *            y
+     *          /  \
+     *        x     z
+     *       / \   / \
+     *      a   b c   d
+     * 
+     * connect34()方法直接将给定的七个结点指针连接成上述的平衡状态.
+     * 当需要进行zigzag或者zagzig双旋调整时, 直接使用该方法将相应结点连接成最终状态,
+     * 这样比进行两次单旋效率稍微要高一些
+     */
+    Node<T>* connect34(Node<T>* x, Node<T>* y,Node<T>* z,
+        Node<T>* a, Node<T>* b, Node<T>* c, Node<T>* d, Node<T>* rt)
+    {
+        //连接y的父亲指针
+        Node<T>* gg = rt->parent;
+        y->parent = gg;
+        if(gg) (gg->LC==rt? gg->LC : gg->RC ) = y;
+        if(this->_root == rt) this->_root = y; //正确更新根结点指针
+
+        x->LC = a; if(a) a->parent = x;
+        x->RC = b; if(b) b->parent = x; x->UpdateHeight();
+        z->LC = c; if(c) c->parent = z;
+        z->RC = d; if(d) d->parent = z; z->UpdateHeight();
+        y->LC = x; x->parent = y;
+        y->RC = z; z->parent = y; y->UpdateHeightAbove();
+        return y;
+    }
+
+    /**zigzig: 只需进行一次zig旋转
+     *         g                        p
+     *        / \                     /   \
+     *       p   d                  v       g
+     *     /  \       zig at g    /  \     / \
+     *   v     c    ===========> a    b   c   d
+     *  / \   
+     * a   b
+     * 
+     * 调用该方法,需要保证结点g的左孩子非空
+     */
+ 
+    Node<T>* zig(Node<T>* g)
+    {
+        //连接父亲指针
+        Node<T>* p = g->LC;
+        Node<T>* gg = g->parent;
+        p->parent = gg;
+        g->parent = p;
+        if(gg) ( gg->LC == g ? gg->LC : gg->RC ) = p;
+
+        //连接孩子指针
+        g->AttachLeftChild( p->DetachRightChild(), false );
+        p->AttachRightChild( g );
+        
+        g->UpdateHeightAbove();
+        if( this->_root == g) this->_root = p; //正确更新根结点指针
+        return p;
+    }
+
+     /**zagzag: 只需进行一次zag旋转
+      *        g                            p
+      *      /   \                        /   \
+      *    a      p        zag at g      g     v
+      *          / \      =========>    / \   / \
+      *        b    v                  a   b c   d
+      *            / \
+      *           c   d
+      * 调用该方法,需要保证结点g的右孩子非空
+      */
+    Node<T>* zag(Node<T>* g)
+    {
+        //连接父亲指针
+        Node<T>* p = g->RC;
+        Node<T>* gg = g->parent;
+        p->parent = gg;
+        g->parent = p;
+        if(gg) ( gg->LC ==g ? gg->LC : gg->RC) = p;
+
+        //连接孩子指针
+        g->AttachRightChild( p->DetachLeftChild(), false );
+        p->AttachLeftChild( g );
+        
+        g->UpdateHeightAbove();
+        if( this->_root == g) this->_root = p; //正确更新根结点指针
+        return p;
+    }
+
+     /**zagzig: 先zig, 再zag
+      *         g                              g                                     v
+      *       /   \                          /   \                                 /   \
+      *      a      p         zig at p      a     v            zag at g           g     p
+      *            / \     ============>         /  \      ===============>      / \   / \
+      *           v   d                         b    p                          a  b  c   d
+      *          / \                                / \
+      *         b  c                               c   d
+      */
+
+     /** zigzag: 先zag ,再zig
+      *       g                                  g                                    v
+      *     /  \                                / \                                 /   \
+      *    p    d          zag at p            v   d           zig at g            p     g
+      *   / \         ==============>         / \          ==============>        / \   / \
+      *  a   v                               p   c                               a   b c   d
+      *     / \                             / \
+      *    b  c                            a   b
+      * 
+      */
+    
+    /***********************************************************************************************************/
+
+public:  //公共接口
     
     BST():
         BinaryTree<T>(),
         _size(0),
         _hot(NULL)
         {}
+    
+    BST(const BST& bst) : BinaryTree<T>()
+    {
+        this->_root = this->Copy(bst._root);
+        _size = bst._size;
+    }
+
+    BST& operator=(const BST& bst)
+    {
+        if(this == &bst) return *this;
+        this->Clear(this->_root);
+        this->_root = this->Copy(bst._root);
+        this->_size = bst._size;
+        return *this;
+    }
+
 
     /**从根结点开始查找给定元素,返回指向该元素所在的结点的迭代器
      * 1.内部调用searchIn()函数
@@ -208,13 +355,16 @@ public:
      * 对于首个结点插入之类的边界情况，均可正确处理
      * TC = O(h), h为树的高度
     */
-    virtual void Insert(const T& e)
+    virtual bool Insert(const T& e)
     {
         Node<T>*& x = SearchIn(e, this->_root, _hot=NULL);
-        if(!x){ //禁止重复元素
+        if(!x) //禁止重复元素
+        { 
             x = new Node<T>(e, _hot); //_hot作为父结点
             ++_size;
+            return true;
         }
+        return false;
     }
 
 
@@ -250,13 +400,13 @@ public:
     Iterator End(){ return Iterator(); }
 
 
-    /** 使用First() 和 Last 返回的迭代器, 
+    /** 使用Head() 和 Tail 返回的迭代器, 
      * 需要使用Prev() 和Next() 进行遍历
      */
-    Iterator First()
+    Iterator Head()
     { return Iterator(NULL,NULL,this->_root->LeftMostNode() ); }
 
-    Iterator Last()
+    Iterator Tail()
     { return Iterator(this->_root->RightMostNode(),NULL,NULL); }
 
 };

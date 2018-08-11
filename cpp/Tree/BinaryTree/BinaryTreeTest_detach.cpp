@@ -125,15 +125,15 @@ int main()
     cout<<"expected:";   preOrder1.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder1.printOutput();   cout<<endl;
     height = A->height;
-    cout<<"expected height of root: 2"<<endl;
+    cout<<"expected height of root: 3"<<endl;
     cout<<"height of root:" <<height<<endl;
-    cout<<(preOrder1.test() &&height==2 ? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(preOrder1.test() &&height==3 ? "PASS!" : "Failed!")<<endl<<endl;
     /*
     Case#1: test PreOrder traverse
     expected:A B D E C F G
     output  :A B D E C F G
-    expected height of root: 2
-    height of root:2
+    expected height of root: 3
+    height of root:3
     PASS!
     */
 
@@ -152,7 +152,7 @@ int main()
 
     cout<<"---C detach from A and attach to E as left child---"<<endl;
     C->Detach();
-    E->AttachLeftSubTree(C);
+    E->AttachLeftChild(C);
 
     cout<<"Case#"<< kiss++ <<": test PreOrder traverse"<<endl;
     TraverseOrderTest<char> preOrder2(pre2.c_str(),7);
@@ -160,16 +160,16 @@ int main()
     cout<<"expected:";   preOrder2.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder2.printOutput();   cout<<endl;
     height = A->height;
-    cout<<"expected height of root: 4"<<endl;
+    cout<<"expected height of root: 5"<<endl;
     cout<<"height of root:" <<height<<endl;
-    cout<<(preOrder1.test() &&height==4 ? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(preOrder1.test() &&height==5 ? "PASS!" : "Failed!")<<endl<<endl;
     /*
     ---C detach from A and attach to E as left child---
     Case#3: test PreOrder traverse
     expected:A B D E C F G
     output  :A B D E C F G
-    expected height of root: 4
-    height of root:4
+    expected height of root: 5
+    height of root:5
     PASS!
     */
 
@@ -188,7 +188,7 @@ int main()
 
     cout<<"---E detach from B and attach to A as right child---"<<endl;
     E->Detach();
-    A->AttachRightSubTree(E);
+    A->AttachRightChild(E);
 
     cout<<"Case#"<< kiss++ <<": test PreOrder traverse"<<endl;
     TraverseOrderTest<char> preOrder3(pre3.c_str(),7);
@@ -196,16 +196,16 @@ int main()
     cout<<"expected:";   preOrder3.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder3.printOutput();   cout<<endl;
     height = A->height;
-    cout<<"expected height of root: 3"<<endl;
+    cout<<"expected height of root: 4"<<endl;
     cout<<"height of root:" <<height<<endl;
-    cout<<(preOrder1.test() &&height==3 ? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(preOrder1.test() &&height==4 ? "PASS!" : "Failed!")<<endl<<endl;
     /*
     ---E detach from B and attach to A as right child---
     Case#5: test PreOrder traverse
     expected:A B D E C F G
     output  :A B D E C F G
-    expected height of root: 3
-    height of root:3
+    expected height of root: 4
+    height of root:4
     PASS!
     */
 
@@ -224,7 +224,7 @@ int main()
 
     cout<<"---B detach from A and attach to E as right child---"<<endl;
     B->Detach();
-    E->AttachRightSubTree(B);
+    E->AttachRightChild(B);
 
     cout<<"Case#"<< kiss++ <<": test PreOrder traverse"<<endl;
     TraverseOrderTest<char> preOrder4(pre4.c_str(),7);
@@ -232,16 +232,16 @@ int main()
     cout<<"expected:";   preOrder4.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder4.printOutput();   cout<<endl;
     height = A->height;
-    cout<<"expected height of root: 3"<<endl;
+    cout<<"expected height of root: 4"<<endl;
     cout<<"height of root:" <<height<<endl;
-    cout<<(preOrder1.test() &&height==3 ? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(preOrder1.test() &&height==4 ? "PASS!" : "Failed!")<<endl<<endl;
     /*
     ---B detach from A and attach to E as right child---
     Case#7: test PreOrder traverse
     expected:A E C F G B D
     output  :A E C F G B D
-    expected height of root: 3
-    height of root:3
+    expected height of root: 4
+    height of root:4
     PASS!
     */
 
@@ -261,7 +261,7 @@ int main()
     cout<<"---F detach from C and attach to E as right child---"<<endl;
     cout<<"---B and D will be removed and disposed---"<<endl;
     F->Detach();
-    E->AttachRightSubTree(F);
+    E->AttachRightChild(F);
 
     cout<<"Case#"<< kiss++ <<": test PreOrder traverse"<<endl;
     TraverseOrderTest<char> preOrder5(pre5.c_str(),5);
@@ -269,17 +269,17 @@ int main()
     cout<<"expected:";   preOrder5.printExpected(); cout<<endl;
     cout<<"output  :";   preOrder5.printOutput();   cout<<endl;
     height = A->height;
-    cout<<"expected height of root: 3"<<endl;
+    cout<<"expected height of root: 4"<<endl;
     cout<<"height of root:" <<height<<endl;
-    cout<<(preOrder1.test() &&height==3 ? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(preOrder1.test() &&height==4 ? "PASS!" : "Failed!")<<endl<<endl;
     /*
     ---F detach from C and attach to E as right child---
     ---B and D will be removed and disposed---
     Case#9: test PreOrder traverse
     expected:A E C G F
     output  :A E C G F
-    expected height of root: 3
-    height of root:3
+    expected height of root: 4
+    height of root:4
     PASS!
     */
 

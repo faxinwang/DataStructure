@@ -5,8 +5,9 @@ NamespaceBegin
 
 #include "../../Queue/Queue.hpp"
 #include "../../util/require.hpp"
-#include <algorithm>
-#define stature(rt) ((rt)? rt->height : -1)
+#define stature(rt) ((rt)? rt->height : 0)
+//计算结点的高度, 叶子结点的高度定义为1, 空结点的高度定义为0
+
 
 /**
  *  二叉树结点结构体, 封装与结点有关的属性和操作
@@ -29,8 +30,8 @@ NamespaceBegin
  * UpdateHeightAbove(): 更新当前结点及其所有祖先结点的高度
  * InsertLeftChild(const T& e):  将元素作为该结点的左孩子插入
  * InsertRightChild(const T& e): 将元素作为该结点的右孩子插入
- * RemoveLeftSubTree() : 删除左子树
- * RemoveRightSubTree() : 删除右子树
+ * RemoveLeftSubTree(Child子树
+ * RemoveRightSubTree(Child子树
  * Detach() : 与父结点分离
  * isLC() : 判断该结点是否是其父亲的左孩子
  * isRC() : 判断该结点是否是其父亲的右孩子
@@ -154,7 +155,7 @@ public: //成员方法
     Node(const T& data=T(), Node* parent=NULL)
         :LC(0)
         ,RC(0)
-        ,height(0) //叶结点的高度定义为0
+        ,height(1) //叶结点的高度定义为0
         ,data(data)
         ,parent(parent)
         { 
@@ -278,7 +279,7 @@ public: //成员方法
     /** 1.删除左子树(注意判断指针是否非空)
      *  2.更新相关结点的高度
      */
-    void RemoveLeftSubTree()
+    void RemoveLeftChild()
     {
         if(LC)
         {
@@ -289,7 +290,7 @@ public: //成员方法
     /** 1.删除右子树(注意判断指针是否非空)
      *  2.更新相关结点的高度
      */
-    void RemoveRightSubTree()
+    void RemoveRightChild()
     {
         if(RC)
         {
@@ -298,14 +299,32 @@ public: //成员方法
         }
     }
 
+    //分离左孩子,返回指向左孩子的指针
+    Node* DetachLeftChild()
+    {
+        Node<T>* child = LC;
+        LC=NULL;
+        if(child) child->parent = NULL;
+        return child;
+    }
+
+    //分离右孩子,返回指向右孩子的指针
+    Node* DetachRightChild()
+    {
+        Node* child = RC;
+        RC=0;
+        if(child) child->parent = NULL;
+        return child;
+    }
+
     /**连接左子树
      * 1.如果左子树存在, 则先删除左子树
      * 2.将左孩子指针指向tree
      * 3.如果tree非空,将tree的父指针指向this
      */
-    void AttachLeftSubTree(Node* tree)
+    void AttachLeftChild(Node* tree, bool removeIfExist = true)
     {
-        if(LC) RemoveLeftSubTree();
+        if(LC && removeIfExist) RemoveLeftChild();
         LC = tree;
         if(tree) tree->parent = this;
         UpdateHeightAbove();
@@ -316,9 +335,9 @@ public: //成员方法
      * 2.将右孩子指针指向tree
      * 3.如果tree非空,将tree的父指针指向this
      */
-    void AttachRightSubTree(Node* tree)
+    void AttachRightChild(Node* tree, bool removeIfExist = true)
     {
-        if(RC) RemoveRightSubTree();
+        if(RC && removeIfExist) RemoveRightChild();
         RC = tree;
         if(tree) tree->parent = this;
         UpdateHeightAbove();
@@ -347,6 +366,10 @@ public: //成员方法
     {
         RotateAt(this,applyToChild);
     }
+
+    /*返回高度较大的孩子*/
+    inline Node<T>* TallerChild(){ return stature(LC) > stature(RC) ? LC : RC; }
+    
 };
 
 

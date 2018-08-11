@@ -79,11 +79,11 @@ int main()
     cout<<"Case#"<< kiss++ <<": test the height of root node"<<endl;
     cout<<"expected: 4"<<endl;
     cout<<"output:"<<A->height<<endl;
-    cout<<(A->height !=4? "Failed!" : "PASS!")<<endl<<endl;
+    cout<<(A->height !=5? "Failed!" : "PASS!")<<endl<<endl;
     /*
     Case#1: test the height of root node
-    expected: 4
-    output:4
+    expected: 5
+    output:5
     PASS!
     */
 
@@ -164,11 +164,11 @@ int main()
     cout<<"Case#"<< kiss++ <<": test the height of root node"<<endl;
     cout<<"expected: 4"<<endl;
     cout<<"output:"<<A->height<<endl;
-    cout<<(A->height !=4? "Failed!" : "PASS!")<<endl<<endl;
+    cout<<(A->height !=5? "Failed!" : "PASS!")<<endl<<endl;
     /*
     Case#7: test the height of root node
-    expected: 4
-    output:4
+    expected: 5
+    output:5
     PASS!
     */
 

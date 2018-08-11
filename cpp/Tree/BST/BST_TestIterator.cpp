@@ -2,7 +2,7 @@
 #include<cstdio>
 #include<set>
 #include "../Vector/Vector.hpp"
-#include "BST.hpp"
+#include "BST2.hpp"
 using namespace std;
 using namespace wfx;
 
@@ -50,7 +50,7 @@ struct TestEqualWithSet
     void printBST()
     { 
         v2.clear();
-        typename BST<T>::Iterator it = bst.First();
+        typename BST<T>::Iterator it = bst.Head();
         while(it.Next())
         {
             cout<<*it<<' ';
@@ -69,14 +69,14 @@ struct TestEqualWithSet
         cout<<endl;
     }
 
-    void testLast()
+    void testTail()
     {
         v1.clear();
         v2.clear();
         typename set<T>::reverse_iterator pos=st.rbegin();
         for(; pos!=st.rend(); ++pos) v1.push_back(*pos);
 
-        typename BST<T>::Iterator it = bst.Last();
+        typename BST<T>::Iterator it = bst.Tail();
         while(it.Prev()) v2.push_back(*it);
     }
 
@@ -127,7 +127,7 @@ int main(){
     cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
     
     cout<<"Case#"<<kiss++ <<" test Last() :"<<endl;
-    tester.testLast();
+    tester.testTail();
     cout<<"expected(reversed):"; tester.print(tester.v1);
     cout<<"output(reversed)  :"; tester.print(tester.v2);
     cout<<(tester.v1==tester.v2? "PASS!" : "Failed")<<endl<<endl;

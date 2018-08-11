@@ -83,13 +83,13 @@ int main()
     */
 
     cout<<"Case#"<< kiss++ <<": test height of root node"<<endl;
-    cout<<"expected : 4"<<endl;
+    cout<<"expected : 5"<<endl;
     cout<<"output : "<<A->height<<endl;
-    cout<<(A->height==4? "PASS!" : "Failde!")<<endl<<endl;
+    cout<<(A->height==5? "PASS!" : "Failde!")<<endl<<endl;
     /*
     Case#3: test height of root node
-    expected : 4
-    output : 4
+    expected : 5
+    output : 5
     PASS!
     */
 
@@ -102,11 +102,11 @@ int main()
     int bt2RootHeight=A->height;
     cout<<"bt2 nodes : "<<bt2Nodes<<endl;
     cout<<"bt2 root height:"<<bt2RootHeight<<endl;
-    cout<<(bt2Nodes==26 && bt2RootHeight==4? "PASS!" : "Failed!")<<endl<<endl;
+    cout<<(bt2Nodes==26 && bt2RootHeight==5? "PASS!" : "Failed!")<<endl<<endl;
     /*
     Case#4: test assignment operator: bt2 = bt
     bt2 nodes : 26
-    bt2 root height:4
+    bt2 root height:5
     PASS!
     */
 
