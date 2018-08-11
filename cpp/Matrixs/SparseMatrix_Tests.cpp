@@ -1,5 +1,5 @@
 #include <iostream>
-#include "MatrixTriplet.hpp"
+#include "SparseMatrix.hpp"
 #include "Matrix.hpp"
 using namespace std;
 using namespace wfx;
