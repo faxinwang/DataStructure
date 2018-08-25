@@ -19,6 +19,7 @@
   * [二叉树 BinaryTree](https://github.com/faxinwang/DataStructure/blob/master/cpp/Tree/BinaryTree)
   * [二叉查找树 BST](https://github.com/faxinwang/DataStructure/blob/master/cpp/Tree/BST)
   * [平衡二叉查找树 AVLTree](https://github.com/faxinwang/DataStructure/tree/master/cpp/Tree/AVLTree)
+  * [伸展树SplayTree](https://github.com/faxinwang/DataStructure/tree/master/cpp/Tree/Splay)
 
 * 图
   * [链接矩阵实现 MatrixGraph](https://github.com/faxinwang/DataStructure/blob/master/cpp/Graph)

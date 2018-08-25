@@ -30,6 +30,11 @@ int main()
     splay.InOrderGo(visit); cout<<endl;
     cout<<"number of elements removed : "<<cnt<<endl<<endl;
 
+    cout<<"after Remove range [5, 15] (empty)"<<endl;
+    cnt = splay.RemoveRange(5,15);
+    splay.InOrderGo(visit); cout<<endl;
+    cout<<"number of elements removed : "<<cnt<<endl<<endl;
+
     cout<<"after Remove range [33, 40]"<<endl;
     cnt = splay.RemoveRange(33, 40);
     splay.InOrderGo(visit); cout<<endl;
@@ -83,6 +88,10 @@ number of elements removed : 10
 after Remove range [0, 20]
 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
 number of elements removed : 4
+
+after Remove range [5, 15] (empty)
+21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
+number of elements removed : 0
 
 after Remove range [33, 40]
 21 22 23 24 25 26 27 28 29 30 31 32 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
