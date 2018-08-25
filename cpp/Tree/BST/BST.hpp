@@ -105,7 +105,7 @@ protected:  //成员变量
     Node<T>* _hot; //始终指向搜索结束时的父亲结点
     int _size;  //由于现在所有的插入和删除都是通过BST进行的, 因此使用变量保存结点个数会更高效
 
-protected: 
+protected:  //静态函数 SearchIn() RemoveAt()
 
     /**从根结点开始查找给定元素,返回该元素所在结点指针的引用
      * 1.如果目标结点存在, 则返回指向该结点指针的引用
@@ -183,6 +183,42 @@ protected:
         return next;
     }
 
+protected: //辅助函数
+
+    Node<T>* _TheSmallestElementGreaterThan(const T& e)
+    {
+        Node<T>* v = SearchIn(e, this->_root, this->_hot);
+        if(v)
+        {
+            Node<T>* next = v->NextNode();
+            return next ? next : NULL;
+        }
+        if(this->_hot)
+        {
+            if(this->_hot->data > e) return this->_hot;
+            Node<T>* next  = this->_hot->NextNode();
+            return next ? next: NULL;
+        }
+        return NULL;
+    }
+
+    Node<T>* _TheLargestElementLessThan(const T& e)
+    {
+        Node<T>* v = SearchIn(e, this->_root, this->_hot);
+        if(v)
+        {
+            Node<T>* prev = v->PrevNode();
+            return prev ? prev : NULL;
+        }
+        if(this->_hot)
+        {
+            if(this->_hot->data < e) return this->_hot;
+            Node<T>* prev = this->_hot->PrevNode();
+            return prev ? prev : NULL;
+        }
+        return NULL;
+    }
+
 protected: //methods for Balanced Binary Search Tree(BBST) subclasses
 
     /*************** The follow methods are for BBST subclasses ****************/
@@ -197,6 +233,9 @@ protected: //methods for Balanced Binary Search Tree(BBST) subclasses
      * connect34()方法直接将给定的七个结点指针连接成上述的平衡状态.
      * 当需要进行zigzag或者zagzig双旋调整时, 直接使用该方法将相应结点连接成最终状态,
      * 这样比进行两次单旋效率稍微要高一些
+     * rt为调整之前局部子树的根结点, 为了正确设置调整之后的新根结点的父指针, 需要知道
+     * 调整之前局部子树根结点的父亲, 这里通过rt得到了该信息; 另外, 知道了局部根结点,
+     * 还能正确更新_root指针.
      */
     Node<T>* connect34(Node<T>* x, Node<T>* y,Node<T>* z,
         Node<T>* a, Node<T>* b, Node<T>* c, Node<T>* d, Node<T>* rt)
@@ -408,6 +447,43 @@ public:  //公共接口
 
     Iterator Tail()
     { return Iterator(this->_root->RightMostNode(),NULL,NULL); }
+
+
+    bool Contains(const T& e){ return SearchIn(e, this->_root, this-_hot) != NULL;  }
+
+    /**返回BST中大于参数e的最小的元素, 如果没有比e大的元素, 则返回e
+     * 首先查找元素e, 
+     *   如果e存在, 则通过e所在结点获取其中序遍历的下一个结点
+     *      如果下一个结点非空, 即为要找的结点
+     *      如果下一个结点为空, 则树中没有比e大的元素, 直接返回e
+     *   如果e不存在, 则通过_hot结点进行查找
+     *      如果_hot结点中的元素大于e,则_hot中的元素就是所求
+     *      如果_hot结点中的元素小于e,则通过_hot获取其中序遍历的下一个结点
+     *          如果下一个结点非空, 即为要找的结点
+     *          如果下一个结点为空, 则树中没有比e大的元素, 这时应该返回e
+     */
+    T TheSmallestElementGreaterThan(const T& e)
+    {
+        Node<T>* v = _TheSmallestElementGreaterThan(e);
+        return v ? v->data : e;
+    }
+
+    /**返回BST中小于参数e的最大的元素, 如果没有比e小的元素, 则返回e
+     * 首先查找元素e,
+     *   如果e存在, 则通过e所在结点获取其中序遍历的上一个结点
+     *      如果上一个结点非空, 即为所求结点
+     *      如果上一个结点为空, 则树中没有比e小的元素, 返回e
+     *   如果e不存在,则通过_hot结点进行查找
+     *      如果_hot结点中的元素小于e,则_hot中的元素就是所求
+     *      如果_hot结点中的元素大于, 则通过_hot获取其中序遍历的上一个结点
+     *          如果上一个结点非空, 即为所求
+     *          如果上一个结点为空, 则上中没有比e小的元素, 直接返回e
+     */
+    T TheLargestElementLessThan(const T& e)
+    {
+        Node<T>* v = _TheLargestElementLessThan(e);
+        return v ? v->data : e;
+    }
 
 };
 

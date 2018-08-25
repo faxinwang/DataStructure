@@ -2,7 +2,7 @@
 #define _AVLTree_H_
 
 #include "../BST/BST.hpp"
-#include <cmath>  //std::abs()
+#include <cmath>  //abs()
 
 
 NamespaceBegin

@@ -1,5 +1,5 @@
 #ignore data input files
-#*.txt
+*.txt
 
 #ignore dev's gmon.out file
 *.out
@@ -13,3 +13,6 @@ _*.hpp
 
 #ignore vscode setting files
 .vscode
+
+#ignore temporary fold
+_*

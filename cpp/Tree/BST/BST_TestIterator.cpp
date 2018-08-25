@@ -1,8 +1,8 @@
 #include<iostream>
 #include<cstdio>
 #include<set>
-#include "../Vector/Vector.hpp"
-#include "BST2.hpp"
+#include "../../Vector/Vector.hpp"
+#include "BST.hpp"
 using namespace std;
 using namespace wfx;
 
@@ -126,7 +126,7 @@ int main(){
     cout<<"output(reversed)  :"; tester.print(tester.v3);
     cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
     
-    cout<<"Case#"<<kiss++ <<" test Last() :"<<endl;
+    cout<<"Case#"<<kiss++ <<" test Tail() :"<<endl;
     tester.testTail();
     cout<<"expected(reversed):"; tester.print(tester.v1);
     cout<<"output(reversed)  :"; tester.print(tester.v2);
@@ -143,6 +143,45 @@ int main(){
     cout<<"expected(reversed):"; tester.print(tester.v1);
     cout<<"output(reversed)  :"; tester.print(tester.v2);
     cout<<(tester.v1==tester.v2? "PASS!" : "Failed")<<endl<<endl;
+
+    tester.bst.Clear();
+    tester.st.clear();
+    tester.insert(0);
+
+    cout<<"Case#"<<kiss++ <<" after clear and insert a single element 0:"<<endl;
+    cout<<"expected(normal) : "; tester.printSet();
+    cout<<"output(normal)   : "; tester.printBST();
+    cout<<"expected(reversed):"; tester.print(tester.v2_reversed);
+    cout<<"output(reversed)  :"; tester.print(tester.v3);
+    cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
+
+    for(int i=1; i<10; ++i) tester.insert(i);
+    cout<<"Case#"<<kiss++ <<" after insert from 1 to 9:"<<endl;
+    cout<<"expected(normal) : "; tester.printSet();
+    cout<<"output(normal)   : "; tester.printBST();
+    cout<<"expected(reversed):"; tester.print(tester.v2_reversed);
+    cout<<"output(reversed)  :"; tester.print(tester.v3);
+    cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
+
+    tester.bst.Clear();
+    tester.st.clear();
+    for(int i=9; i>=0; --i) tester.insert(i);
+
+    cout<<"Case#"<<kiss++ <<" after clear and insert from 9 to 0:"<<endl;
+    cout<<"expected(normal) : "; tester.printSet();
+    cout<<"output(normal)   : "; tester.printBST();
+    cout<<"expected(reversed):"; tester.print(tester.v2_reversed);
+    cout<<"output(reversed)  :"; tester.print(tester.v3);
+    cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
+
+    tester.bst.Clear();
+    tester.st.clear();
+    cout<<"Case#"<<kiss++ <<" after clear:"<<endl;
+    cout<<"expected(normal) : "; tester.printSet();
+    cout<<"output(normal)   : "; tester.printBST();
+    cout<<"expected(reversed):"; tester.print(tester.v2_reversed);
+    cout<<"output(reversed)  :"; tester.print(tester.v3);
+    cout<<(tester.test()? "PASS!" : "Failed")<<endl<<endl;
 
     return 0;
 }
@@ -175,6 +214,34 @@ PASS!
 Case#5 test RBegin and operator--() :
 expected(reversed):100 65 55 45 27 20 19 10 9 6 4 2 1 0 -4 -5
 output(reversed)  :100 65 55 45 27 20 19 10 9 6 4 2 1 0 -4 -5
+PASS!
+
+Case#6 after clear and insert a single element 0:
+expected(normal) : 0
+output(normal)   : 0
+expected(reversed):0
+output(reversed)  :0
+PASS!
+
+Case#7 after insert from 1 to 9:
+expected(normal) : 0 1 2 3 4 5 6 7 8 9
+output(normal)   : 0 1 2 3 4 5 6 7 8 9
+expected(reversed):9 8 7 6 5 4 3 2 1 0
+output(reversed)  :9 8 7 6 5 4 3 2 1 0
+PASS!
+
+Case#8 after clear and insert from 9 to 0:
+expected(normal) : 0 1 2 3 4 5 6 7 8 9
+output(normal)   : 0 1 2 3 4 5 6 7 8 9
+expected(reversed):9 8 7 6 5 4 3 2 1 0
+output(reversed)  :9 8 7 6 5 4 3 2 1 0
+PASS!
+
+Case#9 after clear:
+expected(normal) :
+output(normal)   :
+expected(reversed):
+output(reversed)  :
 PASS!
 
 */

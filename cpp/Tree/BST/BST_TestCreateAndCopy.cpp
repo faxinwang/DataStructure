@@ -1,8 +1,8 @@
 #include<iostream>
 #include<cstdio>
 #include<string>
-#include "../Vector/Vector.hpp"
-#include "BST2.hpp"
+#include "../../Vector/Vector.hpp"
+#include "BST.hpp"
 using namespace std;
 using namespace wfx;
 

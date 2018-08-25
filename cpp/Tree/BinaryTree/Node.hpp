@@ -36,7 +36,7 @@ NamespaceBegin
  * isLC() : 判断该结点是否是其父亲的左孩子
  * isRC() : 判断该结点是否是其父亲的右孩子
  * 
- * static方法上
+ * static方法:
  * RotateAt() : 在某个结点处旋转子树
  * BuildFromPreInOrder() : 根据先序序列和中序序列构建二叉树
  * BuildFromPostInOrder(): 根据后序序列和中序序列构建二叉树
@@ -205,7 +205,7 @@ public: //成员方法
         else
         {
             prev = this;
-            while(prev && prev->isLC()) prev = prev->parent;
+            while(prev && prev->isLC() ) prev = prev->parent;
             prev = prev->parent;
         }
         return prev;
@@ -215,7 +215,7 @@ public: //成员方法
     inline Node* LeftMostNode()
     {
         Node* pos = this;
-        while(pos && pos->LC) pos = pos->LC;
+        while(pos && pos->LC) pos = pos->LC ;
         return pos;
     }
 
