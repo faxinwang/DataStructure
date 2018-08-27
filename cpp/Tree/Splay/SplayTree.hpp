@@ -150,6 +150,7 @@ public:
         Node<T>* lc = rt->DetachLeftChild(); //2
         Node<T>* rc = rt->DetachRightChild();
         delete rt;
+        --(this->_size);
 
         /*------3 选择右子树中最小的元素或者左子树中最大的元素作为新的根结点------*/
         //选择右子树中键值最小的元素最为新的根结点
@@ -172,7 +173,7 @@ public:
         if(newRoot != lc) newRoot->AttachLeftChild(lc, false);
         if(newRoot != rc) newRoot->AttachRightChild(rc, false);
         this->_root = newRoot;
-        --(this->_size);
+        
         return true;
     }
 
@@ -194,7 +195,7 @@ public:
      * 处理这种情况呢, 其实也很简单, 就是只要判断下一_root->LC中的元素是否介于L和R之间, 如果是, 就对其进行
      * 一次zig旋转, 之后所有处于区间(L,R)中的元素就都在根结点的左子树的右子树上了, 这时就可以一网打尽了.
      * 
-     * 这里的代码实现的是删除闭区间[L,R]上的所有元素.
+     * 这里的代码实现的是删除闭区间[L,R]上的所有元素, 返回删除的元素个数.
      */
 
     int RemoveRange(const T& L, const T& R)
