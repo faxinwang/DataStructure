@@ -58,13 +58,13 @@ protected:
         {
             if(g->LC == p) 
             {
-                if(p->LC == v) v = this->zig( this->zig(g) );
-                else v = this->connect34(p , v, g, p->LC, v->LC, v->RC, g->RC, g);
+                if(p->LC == v) this->zig( this->zig(g) );
+                else this->connect34(p , v, g, p->LC, v->LC, v->RC, g->RC, g);
             }
             else
             {
-                if(p->RC == v) v = this->zag( this->zag(g) );
-                else v = this->connect34(g, v, p, g->LC, v->LC, v->RC, p->RC, g);
+                if(p->RC == v) this->zag( this->zag(g) );
+                else this->connect34(g, v, p, g->LC, v->LC, v->RC, p->RC, g);
             }
         }
         //最后如果v处于第二层, 则只需根据情况进行一次单旋即可将v调整至根结点
@@ -72,11 +72,8 @@ protected:
         return v;
 
         //下面是最简单的代码实现, 但是无法避免最坏情况重复发生
-        // for(; p; p = v->parent)
-        // {
-        //     if(p->LC == v) this->zig(p);
-        //     else this->zag(p);
-        // }
+        // for(Node<T> *p = v->parent; p; p = v->parent) p->LC == v ? this->zig(p) : this->zag(p);
+        // return v;
     }
 
 
