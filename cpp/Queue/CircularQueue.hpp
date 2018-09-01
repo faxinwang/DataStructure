@@ -21,6 +21,7 @@ private:
     T* _elem;
     int _cap;
     int _front, _rear;
+    static int Default_Capacity;
 protected:
     void expand(){
     	int oldCap = _cap; 
@@ -37,7 +38,7 @@ protected:
 public:
 
     //constructor
-    CircularQueue(int capacity=20)
+    CircularQueue(int capacity = Default_Capacity)
         :_cap(capacity),    //the size of the array
          _elem(new T[capacity]), //the array to place elements
          _front(0),         //point to the index of the first element in the queue
@@ -51,6 +52,19 @@ public:
         _rear = q._rear;
         _elem = new T[_cap];
         for(int i=_front; i != _rear; i=(i+1)%_cap) _elem[i] = q._elem[i];
+    }
+
+    //move constructor
+    CircularQueue(CircularQueue&& q) :
+        _cap(q._cap), 
+        _front(q._front), 
+        _rear(q._rear),
+        _elem(q._elem)
+    {
+        q._elem = 0;
+		q._front = q._rear = 0;
+        q._cap = Default_Capacity;
+        q._elem = new T[q._cap];
     }
 
     //assignment operator
@@ -98,6 +112,9 @@ public:
     }
 
 };
+
+//类模板的静态成员的初始化
+template<typename T> int CircularQueue<T>::Default_Capacity=20; 
 
 NamespaceEnd
 

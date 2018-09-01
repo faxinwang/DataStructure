@@ -122,7 +122,24 @@ int main()
     output : true
     PASS!
     */
-   
-
+    
+    cout<<"Case#"<< kiss++ <<" test move constructor bt3 = move(bt2) : "<<endl;
+    BinaryTree<char> bt3 = move(bt2);
+   	bool equalWith1 = bt3 == bt;
+   	cout<<"size of bt2 expected : 0"<<endl;
+   	cout<<"size of bt2 output   : "<<bt2.Size()<<endl;
+   	cout<<"bt3 equal with bt, expected : true"<<endl;
+   	cout<<"bt3 equal with bt, output   : "<< (equalWith1 ? "true" : "false")<<endl;
+   	cout<<(equalWith1 && bt2.Size()==0? "PASS" : "Fail")<<endl;
+   	/*
+   	Case#6 test move constructor bt3 = move(bt2) :
+    size of bt2 expected : 0
+    size of bt2 output   : 0
+    bt3 equal with bt, expected : true
+    bt3 equal with bt, output   : true
+    PASS
+	  */
+	
+	
     return 0;
 }

@@ -98,16 +98,11 @@ protected:  //私有静态方法
 
 public:  //公开方法
     
-    //无参构造函数, 建立一颗空树
-    BinaryTree() 
-        :_root(NULL)
-        {}
-    
     /**通过给定的结点作为二叉树的根结点.
      * 传入的结点必须是根结点,否则其所有的祖先结点将不能被删除,
      * 除非外部能够对其祖先结点进行正确处理,否则将会导致内存泄露.
     */
-    BinaryTree(Node<T>* node)
+    BinaryTree(Node<T>* node = NULL)
         :_root(node)
         {}
 
@@ -121,6 +116,9 @@ public:  //公开方法
      */
     BinaryTree(const BinaryTree& bt):_root(NULL) { *this = bt; }
 
+    //移动构造函数, 不能被继承
+    BinaryTree(BinaryTree && bt):_root( bt._root ) { bt._root = NULL; }
+    
     //赋值运算符
     BinaryTree& operator=(const BinaryTree& bt)
     {

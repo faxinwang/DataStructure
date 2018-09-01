@@ -24,14 +24,14 @@ NamespaceBegin
  * Size() : 返回以该结点为子树的结点的个数
  * NextNode(): 返回中序遍历顺序的下一个结点
  * PrevNode(): 返回中序遍历顺序的上一个结点
- * LeftMostNode(): 返回以当前结点为根的子树的最左边的那个结点
+ * LeftMostNode() : 返回以当前结点为根的子树的最左边的那个结点
  * RightMostNode(): 返回以当前结点为根的子树的最右边的那个结点
- * UpdateHeight(): 更新当前结点的高度
+ * UpdateHeight() : 更新当前结点的高度
  * UpdateHeightAbove(): 更新当前结点及其所有祖先结点的高度
- * InsertLeftChild(const T& e):  将元素作为该结点的左孩子插入
- * InsertRightChild(const T& e): 将元素作为该结点的右孩子插入
- * RemoveLeftSubTree(Child子树
- * RemoveRightSubTree(Child子树
+ * InsertLeftChild()  : 将元素作为该结点的左孩子插入
+ * InsertRightChild() : 将元素作为该结点的右孩子插入
+ * RemoveLeftChild()  : 删除左孩子(子树)
+ * RemoveRightChild() : 删除右孩子(子树)
  * Detach() : 与父结点分离
  * isLC() : 判断该结点是否是其父亲的左孩子
  * isRC() : 判断该结点是否是其父亲的右孩子

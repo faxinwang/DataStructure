@@ -109,6 +109,15 @@ public:
 	Vector<T>(const Vector<T>& v, int low,int high):_elem(0) { copy(v._elem,low,high);}
 	//init from another Vector
 	Vector<T>(const Vector<T>& v):_elem(0) { copy(v._elem, 0, v.size());} 
+
+	//move constructor
+	Vector<T>(Vector<T>&& v):_size(v._size), _cap(v._cap), _elem(v._elem)
+	{
+		v._size = 0;
+		v._cap = 10;
+		v._elem = new T[10];
+	}
+
 	//assign operator
 	Vector<T>& operator=(const Vector<T>& v){ 
 		if(this == &v) return *this; //do not copy from itself

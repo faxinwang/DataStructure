@@ -77,20 +77,37 @@ public:  //An implementation of the internal iterator
         inline bool operator!=(const Iterator& it){ return cur!=it.cur; }
 
         //前缀++运算符,该操作使当前迭代器指向中序遍历序列的下一个结点.
-        void operator++()
+        Iterator& operator++()
         {
             prev=cur;
             cur=next; 
             if(cur) next = cur->NextNode();
+            return *this;
+        }
+        //后缀式++
+        Iterator operator++(int)
+        {
+            Iterator tmp = *this;
+            operator++();
+            return tmp;
         }
 
         //前缀--运算符,该操作使当前迭代器指向中序遍历序列的上一个结点.
-        void operator--()
-        { 
+        Iterator& operator--()
+        {
             next = cur;
             cur = prev;
             if(cur) prev = cur->PrevNode();
+            return *this;
         }
+        //后缀式--
+        Iterator operator--(int)
+        {
+            Iterator tmp = *this;
+            operator--();
+            return tmp;
+        }
+
         //将当前指针移向下一个位置,并返回该位置是否为空,类似jdbc中resultSet的next()方法
         inline bool Next(){ operator++(); return cur != NULL; }
         //将当前指针移向上一个位置,并返回该位置是否为空
@@ -349,6 +366,17 @@ public:  //公共接口
         this->_root = this->Copy(bst._root);
         _size = bst._size;
     }
+
+    // 移动构造函数
+    BST( BST && bst):
+        BinaryTree<T>(bst._root),
+        _size(bst._size),
+        _hot(bst._hot)
+        { 
+            bst._root=NULL; 
+            bst._hot = NULL;
+            bst._size = 0;
+        }
 
     BST& operator=(const BST& bst)
     {

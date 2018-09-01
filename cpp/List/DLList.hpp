@@ -26,7 +26,7 @@ class DLList{
 			Node* insertAsSucc(const T& x);
 		};
 		int _size;
-		Node *header,*tail;
+		Node *head,*tail;
 	protected:
 		Node* erase(Node* pos);
 		void Swap(Node *a, Node *b);
@@ -36,23 +36,25 @@ class DLList{
 				enum Type{Normal, Reversed};
 				Type type;
 				Node *cur;
-				const Node* Trail;
+				const Node* Tail;
 				const Node* Head;
 			public:
 				//let List<T> to be friend of Iterator so that we can visit cur in functions
 				friend class DLList<T>;
-				Iterator(Node* node, const Node* he, const Node* tr,Type type)
-					:cur(node),Head(he),Trail(tr),type(type){}
-				Iterator():cur(0),Trail(0),Head(0),type(Normal){}
-				Iterator operator++();		//prefix self increase
+				Iterator(Node* cur, const Node* head, const Node* tail, Type type=Normal)
+					:cur(cur),Head(head),Tail(tail),type(type){}
+
+				Iterator():cur(0),Tail(0),Head(0),type(Normal){}
+
+				Iterator& operator++();		//prefix self increase
 				Iterator operator++(int);	//suffix self increase
-				Iterator operator--(); 		//prefix self decrease
+				Iterator& operator--(); 		//prefix self decrease
 				Iterator operator--(int);	//suffix self decrease
 				bool operator==(const Iterator& it){return cur==it.cur;}
 				bool operator!=(const Iterator& it){return cur!=it.cur;}
 				T& operator*(){return cur->data;}
 				bool notNull(){return cur!=NULL;}
-				bool hasNext(){return cur->next!=Trail;}
+				bool hasNext(){return cur->next!=Tail;}
 				bool hasPrev(){return cur->prev!=Head;} 
 		};
 
@@ -61,20 +63,22 @@ class DLList{
 		DLList();
 		//copy constructor
 		DLList(DLList& lst);
+		//move copy constructor
+		DLList(DLList &&lst);
 		//assignment operator
 		DLList& operator=(DLList& lst);
 		//return the count of elements in the list
-		int size(){return _size;}
+		int size()const {return _size;}
 		//return turn if size() is 0, else false
-		bool empty(){return !_size;}
+		bool empty()const {return !_size;}
 
 		//return the data at n,start from 0
-		T get(int n);
+		T get(int n) const;
 
 		//return the first element in the list
-		T front(){return header->next->data;}
+		T front(){return head->next->data;}
 		//push element into list at front
-		void push_front(const T& x){header->insertAsSucc(x); ++_size;}
+		void push_front(const T& x){head->insertAsSucc(x); ++_size;}
 		//pop element out of list at front
 		void pop_front();
 
@@ -93,15 +97,15 @@ class DLList{
 		Iterator insertAfter(Iterator p, const T& x);
 		
 		//return the Iterator point to the first element
-		Iterator begin(){return Iterator(header->next,header,tail,Iterator::Normal);} 
+		Iterator begin()const {return Iterator(head->next, head, tail, Iterator::Normal);} 
 		//return the Iterator point to the position after the last element
-		Iterator end(){return Iterator(0,header,tail,Iterator::Normal);}
+		Iterator end()const {return Iterator(tail, head, tail );}
 		//return the right begin iterator point to the last element
-		Iterator rBegin(){return Iterator(tail->prev,header,tail,Iterator::Reversed);}
+		Iterator rBegin()const {return Iterator(tail->prev, head, tail, Iterator::Reversed);}
 		//return the right end iterator
-		Iterator rEnd(){return Iterator(0,header,tail,Iterator::Reversed);}
+		Iterator rEnd()const {return Iterator(head, head, tail, Iterator::Reversed);}
 		//remove element at pos, return a iterator point to the previous position of the removed element
-		Iterator erase(Iterator p){return Iterator( erase(p.cur), header, tail, p.type); }
+		Iterator erase(Iterator p){return Iterator( erase(p.cur), head, tail, p.type); }
 		//remove all duplciates of disordered list,return the number of elements removed
 		int deduplicate();
 		//remove all duplicates of ordered list, return the number of elements removed
@@ -121,8 +125,20 @@ class DLList{
 			}
 		}
 		
-		void clear(){ while(header->next != tail) erase(header->next); }
-		~DLList(){clear(); delete header; delete tail;}
+		void clear(){ while(head->next != tail) erase(head->next); }
+		~DLList(){clear(); delete head; delete tail;}
+
+		bool operator==(const DLList<T>& lst) const
+		{
+			if(_size != lst._size) return false;
+			Iterator p1 = this->begin(), p2 = lst.begin();
+			for(Iterator end = this->end(); p1 != end; ++p1, ++p2 ) if(*p1 != *p1) return false;
+			return true;
+		}
+
+		bool operator!=(const DLList<T>& lst){ return ! operator==(lst); }
+
+		
 };
 
 template<typename T>
@@ -140,35 +156,33 @@ typename DLList<T>::Node* DLList<T>::Node::insertAsSucc(const T& x) {
 /*for normal iterator, ++ operator will make it move right
   for reversed iterator, ++ operator will make it move left*/
 template<typename T>
-typename DLList<T>::Iterator DLList<T>::Iterator::operator++(){
+typename DLList<T>::Iterator& DLList<T>::Iterator::operator++(){
 	require(cur!=NULL,"DLList<T>::Iterator::operator++(): Iterator run out of range");
-	if(type == Normal) cur = cur->next == Trail? 0 : cur->next;
-	else cur = cur->prev == Head? 0 : cur->prev;
+	if(type == Normal) cur = cur == Tail? cur : cur->next;
+	else cur = cur == Head? cur : cur->prev;
 	return *this;
 }
 template<typename T>
 typename DLList<T>::Iterator DLList<T>::Iterator::operator++(int){
 	require(cur!=NULL,"DLList<T>::Iterator::operator++(int): Iterator run out of range");
 	Iterator tmp = *this;
- 	if(type == Normal) cur = cur->next == Trail? 0 : cur->next;
- 	else cur = cur->prev == Head? 0 : cur->prev;
+ 	operator++();
  	return tmp;
 }
 /*for normal iterator, -- operator will make it move left,
   for reversed iterator, -- operator will make it move right*/
 template<typename T>
-typename DLList<T>::Iterator DLList<T>::Iterator::operator--(){
+typename DLList<T>::Iterator& DLList<T>::Iterator::operator--(){
 	require(cur!=NULL,"DLList<T>::Iterator::operator--(): Iterator run out of range");
-	if(type == Normal) cur = cur->prev == Head? 0 : cur->prev;
-	else cur = cur->next == Trail? 0 : cur->next;
+	if(type == Normal) cur = cur == Head? cur : cur->prev;
+	else cur = cur == Tail? cur : cur->next;
 	return *this;
 }
 template<typename T>
 typename DLList<T>::Iterator DLList<T>::Iterator::operator--(int){
 	require(cur!=NULL,"DLList<T>::Iterator::operator--(int): Iterator run out of range");
 	Iterator tmp = *this;
-	if(type == Normal) cur = cur->prev == Head? 0 : cur->prev;
-	else cur = cur->next == Trail? 0 : cur->next;
+	operator--();
 	return tmp;
 }
 
@@ -176,23 +190,36 @@ typename DLList<T>::Iterator DLList<T>::Iterator::operator--(int){
 //constructor
 template<typename T>
 DLList<T>::DLList(){
-	header = new Node;
+	head = new Node;
 	tail = new Node;
-	header->next = tail;
-	tail->prev = header;
+	head->next = tail;
+	tail->prev = head;
 	_size = 0 ;
 }
 
 //copy constructor
 template<typename T>
 DLList<T>::DLList(DLList& lst){
-header = new Node;
+	head = new Node;
 	tail = new Node;
-	header->next = tail;
-	tail->prev = header;
+	head->next = tail;
+	tail->prev = head;
 	_size = 0 ;
 	DLList<T>::Iterator pos = lst.begin();
 	for(; pos!= lst.end(); ++pos) push_back(*pos);
+}
+
+//move constructor
+template<typename T>
+DLList<T>::DLList(DLList &&lst){
+	_size = lst._size;
+	head = lst.head;
+	tail = lst.tail;
+	lst.head = new Node;
+	lst.tail = new Node;
+	lst.head->next = lst.tail;
+	lst.tail->prev = lst.head;
+	lst._size = 0;
 }
 
 //assignment operator
@@ -206,9 +233,9 @@ DLList<T>& DLList<T>::operator=(DLList<T>& lst){
 
 //get the data of n-th elmeent
 template<typename T>
-T DLList<T>::get(int n){
+T DLList<T>::get(int n) const {
 	require(0<= n && n< _size,"get():Index out of range");
-	Node *p = header->next;
+	Node *p = head->next;
 	while(0 < n--) p = p->next;
 	return p->data;
 }
@@ -228,7 +255,7 @@ template<typename T>
 typename DLList<T>::Iterator DLList<T>::insertBefore(Iterator p ,const T& x){
 	require(p.notNull(), "insertBefore():NULL pointer exception:iterator p is out of range");
 	++_size; 
-	return Iterator(p.cur->insertAsPred(x), header, tail, p.type);
+	return Iterator(p.cur->insertAsPred(x), head, tail, p.type);
 }
 
 //insert x after Node p, return the new inserted node
@@ -236,14 +263,14 @@ template<typename T>
 typename DLList<T>::Iterator DLList<T>::insertAfter(Iterator p ,const T& x){
 	require(p.cur!=NULL,"insertAfter():NULL pointer exception: argument p is NULL"); 
 	++_size; 
-	return Iterator(p.cur->insertAsSucc(x), header, tail, p.type);
+	return Iterator(p.cur->insertAsSucc(x), head, tail, p.type);
 }
 
 //pop the first element
 template<typename T>
 void DLList<T>::pop_front(){
 	require(_size>0, "pop_front(): can not pop element, DLList is empty");
-	erase(header->next);
+	erase(head->next);
 }
 
 //pop the last element
@@ -285,7 +312,7 @@ template<typename T>
 int DLList<T>::unquify(){
 	int oldSize = _size;
 	if(_size < 2) return 0;
-	Node *p = header->next,*q = header->next;
+	Node *p = head->next,*q = head->next;
 	while(tail != (q=q->next)) 
 		if(p->data == q->data) q = erase(q);
 		else p = q;
